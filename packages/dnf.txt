@@ -28,8 +28,9 @@ copyq                # clipboard manager — your Maccy replacement
 meld                 # GUI diff/merge tool — git diff.tool/merge.tool (replaces Kaleidoscope)
 yt-dlp               # video downloader (replaces youtube-dl)
 ImageMagick          # `convert`/`magick` image tooling
-# NOTE: full ffmpeg is NOT listed here — it conflicts with Fedora's preinstalled
-# ffmpeg-free and must be SWAPPED in, which bootstrap.sh step 4 does separately.
+# NOTE: ffmpeg is intentionally skipped — Fedora's preinstalled `ffmpeg-free`
+# is kept (full RPM Fusion ffmpeg conflicts across its whole -free lib stack).
+# To get the full build later: sudo dnf swap --allowerasing ffmpeg-free ffmpeg
 
 # --- Auto-included suggestions you DID NOT actually use anywhere ---
 # Left commented so you can flip them on if you want them. Reason noted.

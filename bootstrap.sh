@@ -92,11 +92,10 @@ if [[ -f "$DNF_LIST" ]]; then
   sudo dnf install -y $(read_pkg_list "$DNF_LIST")
 fi
 
-# Full ffmpeg from RPM Fusion: Fedora preinstalls a stripped `ffmpeg-free` that
-# *conflicts* with it, so swap (don't install) — and only if not already done.
-if rpm -q ffmpeg-free >/dev/null 2>&1; then
-  sudo dnf swap -y ffmpeg-free ffmpeg
-fi
+# NOTE: we intentionally keep Fedora's preinstalled `ffmpeg-free` rather than
+# swapping in RPM Fusion's full `ffmpeg` (the swap conflicts across the whole
+# -free library stack). ffmpeg-free covers almost everything. To get the full
+# build later: sudo dnf swap --allowerasing ffmpeg-free ffmpeg
 
 # 1Password desktop — not in Fedora/Flathub, so add 1Password's signed vendor
 # repo and install it. Idempotent: skipped once the package is present.
