@@ -222,6 +222,11 @@ gsettings set org.gnome.desktop.screensaver lock-delay 60
 # Don't auto-suspend a workstation while on AC power.
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
 
+# macOS-style screenshots: Super+Shift+4 = interactive area-select (keep Print
+# too), Super+Shift+3 = whole screen to file. (Mac Cmd+Shift+4 / Cmd+Shift+3.)
+gsettings set org.gnome.shell.keybindings show-screenshot-ui "['<Shift><Super>4', 'Print']"
+gsettings set org.gnome.shell.keybindings screenshot "['<Shift><Super>3']"
+
 # Window tiling like Rectangle (see RECTANGLE_KEYS.md): GNOME built-in halves +
 # maximize via Super+arrows; quarters come from the Tiling Shell extension.
 gsettings set org.gnome.mutter.keybindings toggle-tiled-left  "['<Super>Left']"
