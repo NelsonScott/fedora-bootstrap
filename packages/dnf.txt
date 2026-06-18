@@ -1,0 +1,31 @@
+# DNF packages — one per line. Comments (#) and blank lines are ignored.
+# Installed by bootstrap.sh step 4 in a single `dnf install`.
+
+# --- Seed: requested baseline ---
+git
+curl
+wget
+zsh
+htop
+btop
+fzf
+gh
+
+# --- Required by bootstrap itself ---
+util-linux-user      # provides `chsh` on Fedora (step 8 needs it)
+
+# --- Tools you ACTUALLY use (found in your dotfiles) ---
+jq                   # JSON processor (used by your smart_shell helper; broadly useful)
+autojump-zsh         # `j` dir-jumping; sourced in your zshrc
+thefuck              # command corrector; aliased + in your omz plugins
+cowsay               # zsh login greeting
+fortune-mod          # zsh login greeting (provides `fortune`)
+lolcat               # zsh login greeting (pipes the cowsay/fortune output)
+wl-clipboard         # `wl-copy` — Linux replacement for your `pbcopy` alias
+
+# --- Auto-included suggestions you DID NOT actually use anywhere ---
+# Left commented so you can flip them on if you want them. Reason noted.
+# ripgrep            # your search() function uses grep, not rg — not used
+# fd-find            # your search() function uses find, not fd — not used
+# tmux               # not referenced anywhere in your dotfiles
+# bat                # nice `cat` replacement, but you don't use it today

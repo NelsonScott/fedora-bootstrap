@@ -1,0 +1,16 @@
+# Flatpak apps — one Flathub application ID per line.
+# Comments (#) and blank lines are ignored. Installed by bootstrap.sh step 5
+# (Flathub is added automatically first).
+#
+# HOW TO ADD AN APP:
+#   1. Find its ID at https://flathub.org (the reverse-DNS string under the
+#      app name, e.g. "org.videolan.VLC"), or run:
+#         flatpak search <name>
+#   2. Add the ID on its own line below.
+#   3. Re-run ./bootstrap.sh — already-installed apps are skipped.
+#
+# This file starts empty on purpose. See MIGRATION.md for the apps you're
+# bringing over. Example (uncomment to install, or add your own):
+
+# org.videolan.VLC
+
