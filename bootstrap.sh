@@ -247,9 +247,10 @@ if command -v gnome-extensions >/dev/null && [[ "${XDG_CURRENT_DESKTOP:-}" == *G
   fi
 fi
 
-# Firefox add-on policy: auto-installs uBlock Origin, Vimium, Videospeed,
-# 1Password, FireShot (see firefox/policies.json). Restart Firefox to apply.
-sudo install -Dm644 "$REPO_DIR/firefox/policies.json" /etc/firefox/policies/policies.json
+# Firefox add-ons are installed MANUALLY (one click each) so they're not
+# "managed by your organization" and stay fully removable. See the AMO links
+# in FIREFOX_EXTENSIONS.md (uBlock Origin, Vimium, Videospeed, 1Password,
+# FireShot). No enterprise policy is used.
 
 # ---------------------------------------------------------------------------
 # 9. oh-my-zsh + make zsh the default shell
