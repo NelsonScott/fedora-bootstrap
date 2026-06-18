@@ -23,6 +23,14 @@ fortune-mod          # zsh login greeting (provides `fortune`)
 lolcat               # zsh login greeting (pipes the cowsay/fortune output)
 wl-clipboard         # `wl-copy` — Linux replacement for your `pbcopy` alias
 
+# --- Apps/tools migrated from your Mac (MIGRATION.md picks) ---
+copyq                # clipboard manager — your Maccy replacement
+meld                 # GUI diff/merge tool — git diff.tool/merge.tool (replaces Kaleidoscope)
+yt-dlp               # video downloader (replaces youtube-dl)
+ImageMagick          # `convert`/`magick` image tooling
+# NOTE: full ffmpeg is NOT listed here — it conflicts with Fedora's preinstalled
+# ffmpeg-free and must be SWAPPED in, which bootstrap.sh step 4 does separately.
+
 # --- Auto-included suggestions you DID NOT actually use anywhere ---
 # Left commented so you can flip them on if you want them. Reason noted.
 # ripgrep            # your search() function uses grep, not rg — not used

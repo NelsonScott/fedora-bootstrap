@@ -9,8 +9,9 @@
 #   2. Add the ID on its own line below.
 #   3. Re-run ./bootstrap.sh — already-installed apps are skipped.
 #
-# This file starts empty on purpose. See MIGRATION.md for the apps you're
-# bringing over. Example (uncomment to install, or add your own):
+# See MIGRATION.md for the apps you're bringing over.
 
-# org.videolan.VLC
+# --- Apps migrated from your Mac (MIGRATION.md picks) ---
+org.videolan.VLC          # media player
+com.valvesoftware.Steam   # gaming (Flatpak build recommended for NVIDIA)
 
