@@ -165,6 +165,11 @@ step "Step 7/10  Install + configure keyd (Mac-style Cmd key)"
 sudo dnf copr enable -y alternateved/keyd
 sudo dnf install -y keyd
 
+# The app-specific overrides (keyd/app.conf) need keyd-application-mapper to
+# reach keyd's control socket (/run/keyd.socket, mode root:keyd 660). Add this
+# user to the `keyd` group; takes effect on next login.
+sudo usermod -aG keyd "$USER"
+
 sudo mkdir -p /etc/keyd
 sudo cp "$REPO_DIR/keyd/default.conf" /etc/keyd/default.conf
 
