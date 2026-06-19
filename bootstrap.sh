@@ -220,6 +220,11 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys screensaver "['<Super
 step "Step 8/10  GNOME desktop settings (macOS-style QoL)"
 # Window buttons: GNOME hides minimize/maximize by default — put them back.
 gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
+# Natural scrolling like macOS. GNOME defaults the touchpad to natural but
+# leaves the mouse wheel "traditional" and gives it no Settings-GUI toggle, so
+# set both keys explicitly here.
+gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
+gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
 # Blank the screen after 15 min idle (desktop), not the 5 min default.
 gsettings set org.gnome.desktop.session idle-delay 900
 # Lock 60s after the screen blanks instead of instantly (grace period).
