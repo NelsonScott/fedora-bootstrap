@@ -284,7 +284,15 @@ if [[ "${SHELL:-}" != "$ZSH_PATH" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 10. Next steps
+# 10. Dictation — double-tap Ctrl -> local speech-to-text typed anywhere.
+#     Nemotron word-streaming (GPU) + Whisper large-v3 fallback. Details and
+#     revert instructions: dictation/README.md
+# ---------------------------------------------------------------------------
+step "Step 10/10  Dictation (double-tap Ctrl, local Whisper/Nemotron)"
+bash "$REPO_DIR/dictation/install.sh"
+
+# ---------------------------------------------------------------------------
+# 11. Next steps
 # ---------------------------------------------------------------------------
 set +x
 cat <<'STEPS'
