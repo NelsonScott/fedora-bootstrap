@@ -1,3 +1,4 @@
 # Nothing secret lives in this repo by design (secrets stay in dotfiles/.env).
 *.backup
 .DS_Store
+__pycache__/
