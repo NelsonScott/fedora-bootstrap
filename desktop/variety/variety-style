@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+# Switch the Variety quote/clock overlay between the three designs from the
+# Claude Design project "Wallpaper quote display design".
+#
+#   variety-style a            sleek modern  (Space Grotesk, hairline + radial scrim)
+#   variety-style b [top]      classic       (Cormorant Garamond, centred lower third)
+#   variety-style c            frosted glass (Space Grotesk + IBM Plex Mono card)
+#
+# Optional 2nd argument places the clock: "top" = top centre, otherwise the
+# style's default corner.
+#
+# Two things the clock filter must respect, both learned the hard way:
+#   1. Variety only substitutes the [%HOFFSET+N] form. Write a minus sign and
+#      the %H survives into strftime and becomes the hour ("[15OFFSET-3]").
+#      Every offset below is therefore >= 0 and uses '+'.
+#   2. ImageMagick cannot pick an instance out of a variable font, so it renders
+#      the default (thin) weight. The fonts below are STATIC instances cut with
+#      fontTools at the weights the design calls for.
+set -euo pipefail
+
+STYLE="${1:-}"
+CLOCKPOS="${2:-default}"
+case "$STYLE" in a|b|c) ;; *) echo "usage: variety-style {a|b|c} [top]"; exit 1 ;; esac
+
+CONF="$HOME/.config/variety/variety.conf"
+FD="$HOME/.local/share/fonts/design"
+SGL="$FD/SpaceGrotesk-Light.ttf"
+SGR="$FD/SpaceGrotesk-Regular.ttf"
+CGM="$FD/CormorantGaramond-Medium.ttf"
+CGR="$FD/CormorantGaramond-Regular.ttf"
+PM="$FD/IBMPlexMono-Regular.ttf"
+
+echo "$STYLE" > "$HOME/.config/variety/quote_style"
+
+# The quote block is drawn in Cairo by the patched QuoteWriter.py; the clock
+# stays on ImageMagick so it can keep refreshing every minute.
+case "$STYLE" in
+  a) TFONT="$SGL"; DFONT="$SGR"; CSIZE=92; DSIZE=26; KERN=3.1
+     TFMT='%-I:%M %p'; DFMT='%^A, %^B %d'; GRAV=SouthEast; TX=104; TY=152; DX=104; DY=104 ;;
+  b) TFONT="$CGM"; DFONT="$CGR"; CSIZE=88; DSIZE=28; KERN=5.6
+     TFMT='%-I:%M %p'; DFMT='%^A · %^B %d'; GRAV=SouthEast; TX=104; TY=156; DX=104; DY=104 ;;
+  c) TFONT="$SGL"; DFONT="$PM"; CSIZE=92; DSIZE=24; KERN=2.4
+     TFMT='%-I:%M %p'; DFMT='%a, %B %d'; GRAV=SouthWest; TX=96; TY=131; DX=96; DY=88 ;;
+esac
+
+CGMI="$FD/CormorantGaramond-MediumItalic.ttf"
+
+if [ "$CLOCKPOS" = "top" ]; then
+  # Top-centre clock in the QUOTE's exact styling: Cormorant Medium Italic,
+  # 54px (27px design @2x), 1.42 line height, real Gaussian-blurred shadow.
+  # Built as blurred-label composites so the NATIVE per-minute clock refresh
+  # keeps ticking - no Cairo, no freezing. -gravity North self-centres, so
+  # no HOFFSET math is needed; [%VOFFSET+N] keeps it correct on trimmed crops.
+  FILTER=$(python3 - "$CGMI" <<'TOPPY'
+import sys
+f = sys.argv[1]
+def layer(fmt, y):
+    # same recipe as the bottom-right clock the user approved: a stroked
+    # dark halo pass, then clean white fill at the IDENTICAL annotate
+    # coordinates - annotate keeps baselines aligned, unlike label composites.
+    at = "0x0+[%%HOFFSET+0]+[%%VOFFSET+%d]" % y
+    return " ".join([
+        "-font", f, "-pointsize", "54", "-gravity", "North", "-kerning", "0",
+        "-stroke", "'#00000070'", "-strokewidth", "3",
+        "-fill", "'#00000070'", "-annotate", at, "'%s'" % fmt,
+        "-stroke", "none", "-fill", "white", "-annotate", at, "'%s'" % fmt])
+print(layer("%-I:%M %p", 88) + " " + layer("%A, %B %d", 165))
+TOPPY
+)
+else
+  FILTER=$(python3 - "$TFONT" "$DFONT" "$KERN" "$TFMT" "$DFMT" "$GRAV" \
+                   "$TX" "$TY" "$DX" "$DY" <<'PY'
+import sys
+tf, df, kern, tfmt, dfmt, grav, tx, ty, dx, dy = sys.argv[1:11]
+def block(font, size, kern, fmt, X, Y):
+    at = "0x0+[%%HOFFSET+%s]+[%%VOFFSET+%s]" % (X, Y)
+    return " ".join([
+        "-font", font, "-pointsize", size, "-gravity", grav, "-kerning", kern,
+        # a stroked pass under the text gives a crisp halo. Offset ghost copies
+        # read as blur at this size, which is what they looked like before.
+        "-stroke", "'#00000055'", "-strokewidth", "6",
+        "-fill", "'#00000055'", "-annotate", at, "'%s'" % fmt,
+        "-stroke", "none", "-fill", "white", "-annotate", at, "'%s'" % fmt])
+print("-density 100 "
+      + block(tf, "%CLOCK_FONT_SIZE", "0", tfmt, tx, ty) + " "
+      + block(df, "%DATE_FONT_SIZE", kern, dfmt, dx, dy))
+PY
+)
+fi
+
+variety --quit >/dev/null 2>&1 || true
+sleep 2
+
+python3 - "$CONF" "$CSIZE" "$DSIZE" "$FILTER" <<'PY'
+import re, sys
+conf, csize, dsize, filt = sys.argv[1:5]
+s = open(conf).read()
+# family names here are cosmetic; the filter names the actual font files.
+s = re.sub(r'^clock_font = .*$', 'clock_font = Clock ' + csize, s, flags=re.M)
+s = re.sub(r'^clock_date_font = .*$', 'clock_date_font = Date ' + dsize, s, flags=re.M)
+s = re.sub(r'^clock_filter = .*$', 'clock_filter = "' + filt + '"', s, flags=re.M)
+s = re.sub(r'^clock_enabled = .*$', 'clock_enabled = True', s, flags=re.M)
+s = re.sub(r'^quotes_enabled = .*$', 'quotes_enabled = True', s, flags=re.M)
+open(conf, 'w').write(s)
+PY
+
+GDK_BACKEND=x11 nohup variety >/dev/null 2>&1 &
+sleep 14
+variety --next >/dev/null 2>&1 || true
+echo "style $STYLE applied (clock: $CLOCKPOS)"

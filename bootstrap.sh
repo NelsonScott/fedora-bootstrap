@@ -43,14 +43,14 @@ step() {
 # ---------------------------------------------------------------------------
 # 1. System upgrade
 # ---------------------------------------------------------------------------
-step "Step 1/10  System upgrade (dnf upgrade -y)"
+step "Step 1/11  System upgrade (dnf upgrade -y)"
 sudo dnf upgrade -y
 
 # ---------------------------------------------------------------------------
 # 2. RPM Fusion (free + nonfree) — needed for NVIDIA drivers, codecs, Steam...
 #    Idempotent: dnf install of an already-installed release rpm is a no-op.
 # ---------------------------------------------------------------------------
-step "Step 2/10  Enable RPM Fusion (free + nonfree)"
+step "Step 2/11  Enable RPM Fusion (free + nonfree)"
 sudo dnf install -y \
   "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm" \
   "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
@@ -77,7 +77,7 @@ sudo dnf upgrade --refresh -y
 #    Either disable Secure Boot in BIOS, or enroll the akmods key (see
 #    `sudo akmods --force` + `mokutil`). Easiest on a fresh box: disable it.
 # ---------------------------------------------------------------------------
-step "Step 3/10  NVIDIA driver for RTX 5090 (akmod-nvidia + CUDA) — REBOOT after!"
+step "Step 3/11  NVIDIA driver for RTX 5090 (akmod-nvidia + CUDA) — REBOOT after!"
 sudo dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda
 # Kick off the module build now so it's ready by the time you reboot.
 sudo akmods --force || true
@@ -85,7 +85,7 @@ sudo akmods --force || true
 # ---------------------------------------------------------------------------
 # 4. DNF packages (from packages/dnf.txt)
 # ---------------------------------------------------------------------------
-step "Step 4/10  Install DNF packages from packages/dnf.txt"
+step "Step 4/11  Install DNF packages from packages/dnf.txt"
 if [[ -f "$DNF_LIST" ]]; then
   # One `dnf install` call with the whole list: idempotent and fast.
   # shellcheck disable=SC2046
@@ -116,7 +116,7 @@ fi
 # ---------------------------------------------------------------------------
 # 5. Flatpak apps (from packages/flatpak.txt)
 # ---------------------------------------------------------------------------
-step "Step 5/10  Set up Flathub + install Flatpak apps from packages/flatpak.txt"
+step "Step 5/11  Set up Flathub + install Flatpak apps from packages/flatpak.txt"
 sudo dnf install -y flatpak
 # Add Flathub if it isn't there yet (idempotent: --if-not-exists).
 flatpak remote-add --if-not-exists flathub \
@@ -132,7 +132,7 @@ fi
 # ---------------------------------------------------------------------------
 # 6. Node.js (for Claude Code) + npm
 # ---------------------------------------------------------------------------
-step "Step 6/10  Install Node.js + npm (for Claude Code)"
+step "Step 6/11  Install Node.js + npm (for Claude Code)"
 sudo dnf install -y nodejs npm
 
 set +x
@@ -161,7 +161,7 @@ set -x
 #    alternateved/keyd COPR first. Config lives in keyd/default.conf in this
 #    repo (version-controlled) and is copied into place below.
 # ---------------------------------------------------------------------------
-step "Step 7/10  Install + configure keyd (Mac-style Cmd key)"
+step "Step 7/11  Install + configure keyd (Mac-style Cmd key)"
 sudo dnf copr enable -y alternateved/keyd
 sudo dnf install -y keyd
 
@@ -217,7 +217,7 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys screensaver "['<Super
 #
 #    All per-user (no sudo) and reversible. gsettings writes are idempotent.
 # ---------------------------------------------------------------------------
-step "Step 8/10  GNOME desktop settings (macOS-style QoL)"
+step "Step 8/11  GNOME desktop settings (macOS-style QoL)"
 # Window buttons: GNOME hides minimize/maximize by default — put them back.
 gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
 # Natural scrolling like macOS. GNOME defaults the touchpad to natural but
@@ -270,7 +270,7 @@ fi
 # ---------------------------------------------------------------------------
 # 9. oh-my-zsh + make zsh the default shell
 # ---------------------------------------------------------------------------
-step "Step 9/10  Install oh-my-zsh + set zsh as default shell"
+step "Step 9/11  Install oh-my-zsh + set zsh as default shell"
 if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
   # Unattended install: doesn't run zsh or change the shell itself.
   RUNZSH=no CHSH=no KEEP_ZSHRC=yes \
@@ -288,11 +288,20 @@ fi
 #     Nemotron word-streaming (GPU) + Whisper large-v3 fallback. Details and
 #     revert instructions: dictation/README.md
 # ---------------------------------------------------------------------------
-step "Step 10/10  Dictation (double-tap Ctrl, local Whisper/Nemotron)"
+step "Step 10/11  Dictation (double-tap Ctrl, local Whisper/Nemotron)"
 bash "$REPO_DIR/dictation/install.sh"
 
 # ---------------------------------------------------------------------------
-# 11. Next steps
+# 11. Desktop restyle — Mac-like GNOME (extensions, icons/cursor, Qt theming)
+#     + Variety wallpaper rig (styled quote overlay, ticking styled clock).
+#     Details, gotchas, and the DO-NOT-INSTALL Blur-my-Shell warning:
+#     desktop/README.md
+# ---------------------------------------------------------------------------
+step "Step 11/11  Desktop restyle (Mac-like GNOME + wallpaper rig)"
+bash "$REPO_DIR/desktop/install.sh"
+
+# ---------------------------------------------------------------------------
+# 12. Next steps
 # ---------------------------------------------------------------------------
 set +x
 cat <<'STEPS'
