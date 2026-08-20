@@ -49,5 +49,5 @@ GNOME 48.
 
 - Display scaling / monitor layout (hardware-specific): 4K DP-4 at 125%
   fractional scaling, 1080p portrait at x=3072. Set in Settings → Displays.
-- Clipboard manager: in flux (Copyous on trial vs CopyQ).
-- "Phase 3" (Marble shell theme + custom palette): undecided.
+- ~~Clipboard~~ decided: Copyous (Super+Shift+C) — CopyQ removed Aug 2026.
+- "Phase 3" (Marble shell theme, custom amber palette): ON TRIAL locally — will be encoded here once kept.

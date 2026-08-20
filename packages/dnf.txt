@@ -24,7 +24,6 @@ lolcat               # zsh login greeting (pipes the cowsay/fortune output)
 wl-clipboard         # `wl-copy` — Linux replacement for your `pbcopy` alias
 
 # --- Apps/tools migrated from your Mac (MIGRATION.md picks) ---
-copyq                # clipboard manager — your Maccy replacement
 meld                 # GUI diff/merge tool — git diff.tool/merge.tool (replaces Kaleidoscope)
 yt-dlp               # video downloader (replaces youtube-dl)
 ImageMagick          # `convert`/`magick` image tooling

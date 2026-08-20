@@ -25,14 +25,15 @@
 #   - Display scaling / monitor layout: hardware-specific. On the 4K Samsung
 #     (DP-4) we run 125% fractional scaling with the portrait 1080p at
 #     x=3072 — set via Settings > Displays on a new machine.
-#   - Phase 3 (Marble shell theme + custom palette): not yet decided.
+#   - Phase 3 (Marble shell theme, amber palette): ON TRIAL — encode once kept.
 
 set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo ">>> desktop: packages"
 sudo dnf install -y variety ImageMagick qt6ct kvantum python3-fonttools \
-  gnome-shell-extension-just-perfection
+  gnome-shell-extension-just-perfection gnome-shell-extension-user-theme \
+  libgda libgda-sqlite gsound
 
 # ---------------------------------------------------------------------------
 # Fonts for the wallpaper overlay (Space Grotesk, Cormorant Garamond,
@@ -105,7 +106,8 @@ install -Dm644 "$DIR/config/environment.d/50-cursor.conf"   "$HOME/.config/envir
 # Freshly installed extensions load at the NEXT login on Wayland.
 # ---------------------------------------------------------------------------
 GVER="$(gnome-shell --version | grep -oE '[0-9]+' | head -1)"
-for UUID in kiwi@kemma kiwimenu@kemma rounded-window-corners@fxgn Rounded_Corners@lennart-k; do
+# copyous = clipboard manager (Maccy-style; replaced CopyQ Aug 2026).
+for UUID in kiwi@kemma kiwimenu@kemma rounded-window-corners@fxgn Rounded_Corners@lennart-k copyous@boerdereinar.dev; do
   if ! gnome-extensions info "$UUID" &>/dev/null; then
     echo ">>> desktop: installing extension $UUID"
     INFO=$(curl -sfL "https://extensions.gnome.org/extension-info/?uuid=$UUID&shell_version=$GVER")
@@ -116,6 +118,18 @@ for UUID in kiwi@kemma kiwimenu@kemma rounded-window-corners@fxgn Rounded_Corner
   gnome-extensions enable "$UUID" || true
 done
 gnome-extensions enable just-perfection-desktop@just-perfection || true
+
+# Copyous: optional syntax-highlight lib (it looks for this exact path),
+# and the global open shortcut. NOTE: the global binding is
+# open-clipboard-dialog-shortcut — open-menu-shortcut is an IN-dialog key.
+if [[ ! -f "$HOME/.local/share/copyous@boerdereinar.dev/highlight.min.js" ]]; then
+  mkdir -p "$HOME/.local/share/copyous@boerdereinar.dev"
+  curl -sfL https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js \
+    -o "$HOME/.local/share/copyous@boerdereinar.dev/highlight.min.js"
+fi
+CSCHEMA="$HOME/.local/share/gnome-shell/extensions/copyous@boerdereinar.dev/schemas"
+[[ -d "$CSCHEMA" ]] && gsettings --schemadir "$CSCHEMA" \
+  set org.gnome.shell.extensions.copyous open-clipboard-dialog-shortcut "['<Super><Shift>c']"
 
 # ---------------------------------------------------------------------------
 # Variety: rotating 4K wallpapers with a styled quote + ticking styled clock.
