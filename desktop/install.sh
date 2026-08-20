@@ -80,7 +80,10 @@ fi
 # GNOME settings. Wayland does NOT scale cursors, so 24px is tiny at 4K.
 # ---------------------------------------------------------------------------
 echo ">>> desktop: gsettings"
-gsettings set org.gnome.desktop.wm.preferences button-layout 'minimize,maximize,close:appmenu'
+# macOS order: close, minimize, maximize — on the LEFT. GNOME's stock order is
+# the reverse, and kiwi just renders whatever this says, so this is the line that
+# decides whether your traffic lights are red-yellow-green or yellow-green-red.
+gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:appmenu'
 gsettings set org.gnome.desktop.interface cursor-size 48
 gsettings set org.gnome.desktop.interface cursor-theme 'macOS'
 gsettings set org.gnome.desktop.interface icon-theme 'WhiteSur-dark'
@@ -180,6 +183,23 @@ if [[ -f "$CONF" ]]; then
   fi
 else
   echo ">>> desktop: NOTE — run variety once, then re-run this script to tune its sources"
+fi
+
+# ---------------------------------------------------------------------------
+# Full GNOME settings restore. gnome.dconf is a dump of /org/gnome/ captured
+# from the working machine, so it carries everything the hand-written gsettings
+# lines above miss: extension configuration (the azclock wallpaper clock is
+# ~30 keys deep), keyboard shortcuts, workspace behaviour, accent colour.
+# Refresh it with:  dconf dump /org/gnome/ > desktop/gnome.dconf
+# Skipped unless BOOTSTRAP_RESTORE_DCONF=1, because it overwrites live settings.
+# ---------------------------------------------------------------------------
+if [[ "${BOOTSTRAP_RESTORE_DCONF:-0}" == "1" && -f "$DIR/gnome.dconf" ]]; then
+  echo ">>> desktop: restoring GNOME settings from gnome.dconf"
+  dconf load /org/gnome/ < "$DIR/gnome.dconf"
+else
+  echo ">>> desktop: NOTE — gnome.dconf not applied. To restore the full desktop"
+  echo ">>>   config (extensions, shortcuts, clock widget), re-run with:"
+  echo ">>>   BOOTSTRAP_RESTORE_DCONF=1 ./desktop/install.sh"
 fi
 
 echo ">>> desktop: done. Log out/in to load freshly installed extensions."
