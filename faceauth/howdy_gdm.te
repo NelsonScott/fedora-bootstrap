@@ -1,0 +1,14 @@
+# Allow the GDM/lock-screen domain to memory-map video devices, so Howdy's
+# face recognition (OpenCV) can capture frames during screen unlock.
+# Evidence: AVC denied { map } comm="python3" path="/dev/video2"
+#           scontext=xdm_t tcontext=v4l_device_t tclass=chr_file
+# Upstream: boltgolt/howdy issue #1117.
+module howdy_gdm 1.0;
+
+require {
+    type xdm_t;
+    type v4l_device_t;
+    class chr_file { map };
+}
+
+allow xdm_t v4l_device_t:chr_file { map };
