@@ -46,3 +46,11 @@ keyboard (`-2333:6666`), so injected chords are real GNOME shortcuts, not keyd-r
 Why NOT Tiling Shell for corners: its move-window keys only move between tiles of the ACTIVE layout,
 and a 2-column layout has no top/bottom tiles. Verified: Super+Left / move-up did nothing.
 `org.gnome.Shell.Screenshot` D-Bus is denied to normal callers (Screencast is not) — hence ydotool for screenshots.
+
+## Ask Claude (AI fallback)
+`ask <anything>` → `scripts/ask-claude.sh` runs `claude -p` (sonnet, slim context: no MCP, no settings/CLAUDE.md, no tools,
+~2-3 s) with a system prompt describing this machine and the installed commands. It prints explanation + the exact
+command + a risk grade, and NEVER runs it. Then:
+- `run last`  → `run-last-suggestion.sh` executes it (refuses risk=high; copy it yourself).
+- `save last` → `save-last-suggestion.sh` writes `scripts/saved/<slug>.sh` with title + aliases, so next time it is a normal instant command.
+Gotcha: Vicinae's systemd PATH lacks ~/.npm-global/bin and ~/.local/bin; scripts export PATH themselves.
