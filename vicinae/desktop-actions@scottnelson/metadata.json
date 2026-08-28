@@ -1,0 +1,8 @@
+{
+  "uuid": "desktop-actions@scottnelson",
+  "name": "Desktop Actions (D-Bus)",
+  "description": "Exposes org.scottnelson.DesktopActions on the session bus so launchers (Vicinae) can tile the focused window by work-area fractions and minimize all windows. No UI.",
+  "shell-version": ["49", "50"],
+  "version": 1,
+  "url": "https://github.com/nelsonscott/fedora-bootstrap"
+}

@@ -29,3 +29,20 @@ apps/files/settings, not actions.
 ## TODO
 - Script commands for GNOME/Tiling Shell actions (show desktop, halves/quarters, move to monitor, restart keyd mapper) with keyword aliases.
 - `ask <text>` fallback that hands unmatched queries to Claude.
+
+## Script commands (`scripts/`, symlinked to `~/.local/share/vicinae/scripts`)
+| Command | Aliases | How it works |
+|---|---|---|
+| Hide All Windows | hide, desktop, minimize all | ydotool sends Ctrl+Super+Alt+H = GNOME `show-desktop` (bound by install.sh) |
+| Window to Top-Left/Top-Right/Bottom-Left/Bottom-Right Corner | corner(s), quarter, tl/tr/bl/br | `org.scottnelson.DesktopActions.Tile x y w h` via `desktop-actions@scottnelson` |
+| Window to Left/Right Half, Center Window | half, split, center | same |
+| Take Screenshot | screenshot, snap, capture | ydotool Shift+Super+4 = GNOME screenshot UI |
+| Record Screen (start/stop) | record, rec, screencast | `org.gnome.Shell.Screencast` D-Bus toggle, saves to ~/Videos/Screencasts |
+| Claude Usage | usage, limits, quota | same OAuth endpoint as the top-bar extension, prints bars |
+| Next Wallpaper | wallpaper, background | `variety -n` |
+
+Why ydotool works here: ydotoold already runs as the user (dictation), and keyd ignores its virtual
+keyboard (`-2333:6666`), so injected chords are real GNOME shortcuts, not keyd-remapped ones.
+Why NOT Tiling Shell for corners: its move-window keys only move between tiles of the ACTIVE layout,
+and a 2-column layout has no top/bottom tiles. Verified: Super+Left / move-up did nothing.
+`org.gnome.Shell.Screenshot` D-Bus is denied to normal callers (Screencast is not) — hence ydotool for screenshots.

@@ -38,3 +38,15 @@ gsettings set org.gnome.mutter center-new-windows true   # vicinae FAQ: GNOME Wa
 systemctl --user enable --now vicinae.service
 sleep 2 && vicinae ping
 echo ">>> Vicinae ready: Super+Space. Verify input server is off: pgrep -f vicinae-input-server (expect nothing)"
+
+# --- Script commands (hide windows, corners, screenshot, record, usage, wallpaper) ---
+mkdir -p "$HOME/.local/share/vicinae"
+ln -sfn "$HERE/scripts" "$HOME/.local/share/vicinae/scripts"
+gsettings set org.gnome.desktop.wm.keybindings show-desktop "['<Control><Super><Alt>h']"   # hide-windows.sh sends this via ydotool
+# Window tiling for the corner/half scripts: our own tiny D-Bus extension (layout-independent,
+# unlike driving Tiling Shell's move-window keys). Needs ONE logout/login to load.
+ln -sfn "$HERE/desktop-actions@scottnelson" "$HOME/.local/share/gnome-shell/extensions/desktop-actions@scottnelson"
+CUR="$(gsettings get org.gnome.shell enabled-extensions)"
+[[ "$CUR" == *desktop-actions@scottnelson* ]] || gsettings set org.gnome.shell enabled-extensions "${CUR%]}, 'desktop-actions@scottnelson']"
+systemctl --user restart vicinae
+echo ">>> Log out/in once so desktop-actions@scottnelson loads (corner/half commands depend on it)."

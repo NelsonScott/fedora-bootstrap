@@ -16,7 +16,7 @@
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="af-magic"
 ENABLE_CORRECTION="true"
-plugins=(git colored-man-pages colorize rand-quote battery thefuck)
+plugins=(git colored-man-pages colorize rand-quote battery)
 source "$ZSH/oh-my-zsh.sh"
 
 autoload zmv
@@ -77,9 +77,6 @@ npx()  { _load_nvm; npx "$@"; }
 # --- fzf (Fedora installs bindings under /usr/share/fzf) ---
 [ -f /usr/share/fzf/shell/key-bindings.zsh ] && source /usr/share/fzf/shell/key-bindings.zsh
 [ -f /usr/share/fzf/shell/completion.zsh ]   && source /usr/share/fzf/shell/completion.zsh
-
-# --- thefuck ---
-command -v thefuck >/dev/null && eval "$(thefuck --alias)"
 
 # ===========================================================================
 # Functions
@@ -188,3 +185,35 @@ search() {
     else grep -riln "$phrase" "$root"; fi
   fi
 }
+
+# Always run Claude Code with permission prompts skipped
+alias claude="claude --dangerously-skip-permissions"
+
+# Disable legacy Ctrl+S/Ctrl+Q terminal freeze (XON/XOFF flow control)
+stty -ixon
+
+. "$HOME/.local/bin/env"
+
+# Android SDK / JDK 17 for Peloton APK builds (added by automated setup 2026-07-06)
+export JAVA_HOME=/opt/jdk/jdk-17.0.19+10
+export ANDROID_HOME=$HOME/Android/Sdk
+export ANDROID_SDK_ROOT=$HOME/Android/Sdk
+export PATH="$JAVA_HOME/bin:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
+
+# >>> mamba initialize >>>
+# !! Contents within this block are managed by 'micromamba shell init' !!
+export MAMBA_EXE='/home/scottnelson/.local/bin/micromamba';
+export MAMBA_ROOT_PREFIX='/home/scottnelson/micromamba';
+__mamba_setup="$("$MAMBA_EXE" shell hook --shell zsh --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__mamba_setup"
+else
+    alias micromamba="$MAMBA_EXE"  # Fallback on help from micromamba activate
+fi
+unset __mamba_setup
+# <<< mamba initialize <<<
+export UE_EDITOR_PATH="$HOME/opt/UnrealEngine/Engine/Binaries/Linux/UnrealEditor-Cmd"
+
+# macOS-style open command
+alias open='xdg-open'
+export PATH="$HOME/.npm-global/bin:$PATH"
