@@ -31,6 +31,7 @@ cd fedora-bootstrap
 # 9. Window shortcuts   → RECTANGLE_KEYS.md  (installs Tiling Shell)
 # 10. App migration     → MIGRATION.md
 # 11. Browser add-ons   → CHROME_EXTENSIONS.md
+# 12. Command palette   → vicinae/install.sh  (Super+Space)
 ```
 
 ## Files
@@ -45,6 +46,7 @@ cd fedora-bootstrap
 | `MIGRATION.md` | Every Mac app + brew tool → Fedora equivalent. |
 | `CHROME_EXTENSIONS.md` | Each Chrome extension → Firefox add-on. |
 | `RECTANGLE_KEYS.md` | Rectangle shortcuts → GNOME / Tiling Shell. |
+| `vicinae/` | Raycast-style command palette on Super+Space (`vicinae/install.sh`). |
 
 ## Adding a package later
 

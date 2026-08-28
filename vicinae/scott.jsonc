@@ -1,0 +1,12 @@
+{
+	"$schema": "https://vicinae.com/schemas/config.json",
+	"telemetry": { "system_info": false },
+	// Off on purpose: this is the uinput key-injector. keyd owns the keyboard on this box.
+	// Vicinae falls back to "copy" instead of "paste into window", which is fine.
+	"input_server": { "enabled": false },
+	"escape_key_behavior": "close_window",
+	"pop_to_root_on_close": true,
+	"global_shortcuts": { "toggle": "" },
+	"favorites": [],
+	"fallbacks": ["files:search"]
+}
