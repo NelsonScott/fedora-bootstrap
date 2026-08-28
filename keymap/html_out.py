@@ -148,20 +148,20 @@ def render(rows, probs, focused):
           if not probs else '<div class="health bad">🔴 ' + " &nbsp;·&nbsp; ".join(html.escape(p) for p in probs) + "</div>")
     return f"""<!doctype html><meta charset=utf-8><title>Keymap</title>
 <style>
-:root{{--bg:rgba(14,17,22,.88);--card:rgba(255,255,255,.045);--fg:#e6e6e6;--dim:#8b93a1;--acc:#7aa2f7;--warn:#f7768e;--kbd:#242a35}}
-*{{box-sizing:border-box}}html,body{{height:100%}}body{{margin:0;background:var(--bg);color:var(--fg);font:16px/1.4 -apple-system,Inter,system-ui,sans-serif;overflow-x:hidden}}
+:root{{--bg:rgba(14,17,22,.96);--card:rgba(255,255,255,.07);--fg:#e6e6e6;--dim:#8b93a1;--acc:#7aa2f7;--warn:#f7768e;--kbd:#242a35}}
+*{{box-sizing:border-box}}html,body{{height:100%}}body{{margin:0;background:var(--bg);color:var(--fg);font:28px/1.5 -apple-system,Inter,system-ui,sans-serif;overflow-x:hidden}}
 header{{padding:12px 22px 6px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}}
 h1{{margin:0;font-size:22px}}h1 span{{color:var(--dim);font-weight:400;font-size:13px;margin-left:10px}}
 input{{flex:1;min-width:280px;max-width:640px;font:inherit;font-size:16px;padding:6px 12px;border-radius:8px;border:1px solid #333;background:#0b0d11;color:var(--fg)}}
 .health{{padding:4px 10px;border-radius:6px;font-size:12px}}.ok{{background:#12281c;color:#9ece6a}}.bad{{background:#3a1a22;color:#f7768e}}
-main{{columns:3 600px;column-gap:16px;padding:6px 22px 30px}}
+main{{columns:3 1000px;column-gap:16px;padding:6px 22px 30px}}
 section{{break-inside:avoid;background:var(--card);border-radius:10px;padding:8px 12px;margin:0 0 12px}}
 section.pin{{outline:1px solid rgba(122,162,247,.35)}}
 h2{{margin:0 0 4px;font-size:16px;color:var(--acc)}}h2 small{{color:var(--dim);font-weight:400;margin-left:5px}}
 .sub{{display:block;color:var(--dim);font-size:11px;font-weight:400}}
 .row{{display:grid;grid-template-columns:minmax(150px,auto) 1fr auto;gap:8px;align-items:center;padding:4px 0;border-top:1px solid rgba(255,255,255,.05)}}
 .row.warn .a{{color:var(--warn)}}.row.hide{{display:none}}
-kbd{{display:inline-block;background:var(--kbd);border:1px solid #3a4150;border-bottom-width:2px;border-radius:5px;padding:0 6px;margin-right:3px;font:600 13px ui-monospace,monospace;color:#fff;line-height:20px}}
+kbd{{display:inline-block;background:var(--kbd);border:1px solid #3a4150;border-bottom-width:2px;border-radius:5px;padding:0 6px;margin-right:3px;font:600 22px ui-monospace,monospace;color:#fff;line-height:20px}}
 .a{{font-size:15px}}.b{{color:var(--dim);font-size:11px;margin-left:6px;font-family:ui-monospace,monospace}}
 .o{{color:var(--dim);font-size:11px;white-space:nowrap}}
 #more{{display:none}}body.q #more{{display:block}}
