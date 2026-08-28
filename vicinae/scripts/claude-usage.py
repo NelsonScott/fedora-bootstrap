@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 # @vicinae.schemaVersion 1
 # @vicinae.title Claude Usage
-# @vicinae.mode fullOutput
+# @vicinae.mode silent
 # @vicinae.icon ✳️
 # @vicinae.keywords ["claude","usage","limits","quota","rate limit","anthropic","tokens left"]
 # @vicinae.packageName Claude
 # Same endpoint + token as the claude-usage@scottnelson top-bar extension.
-import json, os, sys, urllib.request, datetime
+import json, os, sys, urllib.request, datetime, subprocess
+# Prefer opening the top-bar popover (claude-usage@scottnelson exposes org.scottnelson.ClaudeUsage after re-login)
+r = subprocess.run(['gdbus','call','--session','--dest','org.gnome.Shell','--object-path','/org/scottnelson/ClaudeUsage',
+                    '--method','org.scottnelson.ClaudeUsage.OpenMenu'], capture_output=True)
+if r.returncode == 0:
+    sys.exit(0)
 tok = json.load(open(os.path.expanduser('~/.claude/.credentials.json')))['claudeAiOauth']['accessToken']
 req = urllib.request.Request('https://api.anthropic.com/api/oauth/usage',
     headers={'Authorization': f'Bearer {tok}', 'anthropic-beta': 'oauth-2025-04-20', 'Accept': 'application/json'})

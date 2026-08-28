@@ -1,0 +1,8 @@
+{
+  "uuid": "claude-usage@scottnelson",
+  "name": "Claude Usage",
+  "description": "Shows Claude session / weekly / per-model usage limits in the top bar (reads Claude Code's OAuth token).",
+  "shell-version": ["48", "49", "50"],
+  "url": "",
+  "version": 1
+}

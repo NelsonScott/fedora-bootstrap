@@ -1,0 +1,17 @@
+/* 2a "Warm graphite" — menu surfaces come from Open Bar; this styles content.
+   Palette: Claude orange #d97757 · amber #e0a458 · verdigris #5fa8a0
+   fg #f2ece2 on warm charcoal. */
+.claude-usage-label { font-weight: 600; font-feature-settings: "tnum"; color: #ffffff; text-shadow: 0 0 2px rgba(0,0,0,0.9), 0 1px 1px rgba(0,0,0,0.8); }
+.claude-usage-warn { color: #e0a458; }
+.claude-usage-crit { color: #e89275; }
+.claude-usage-stale { color: #9a938a; }
+.claude-usage-row { padding: 7px 12px; }
+.claude-usage-title { font-weight: 700; color: #f2ece2; }
+.claude-usage-sub { color: rgba(242,236,226,0.55); font-size: 0.88em; }
+.claude-usage-bar-bg { background-color: rgba(255,255,255,0.10); border-radius: 3px; height: 5px; width: 260px; margin-top: 5px; }
+.claude-usage-bar-ok   { background-color: #5fa8a0; border-radius: 3px; height: 5px; }
+.claude-usage-bar-warn { background-color: #e0a458; border-radius: 3px; height: 5px; }
+.claude-usage-bar-crit { background-color: #d97757; border-radius: 3px; height: 5px; }
+.claude-usage-icon { icon-size: 16px; padding: 0; margin-right: 3px; color: #d97757; }
+.claude-usage-box { spacing: 3px; }
+.claude-usage-link { color: #d97757; font-weight: 600; }
