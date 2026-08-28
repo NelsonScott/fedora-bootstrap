@@ -136,18 +136,31 @@ def gnome_rows():
         ("org.gnome.mutter.wayland.keybindings", "/org/gnome/mutter/wayland/keybindings/", "GNOME mutter", ()),
         ("org.gnome.settings-daemon.plugins.media-keys", "/org/gnome/settings-daemon/plugins/media-keys/", "GNOME media", ()),
     ]
-    ts = glob.glob(f"{HOME}/.local/share/gnome-shell/extensions/tilingshell@*/schemas")
-    if ts:
-        schemas.append(("org.gnome.shell.extensions.tilingshell", "/org/gnome/shell/extensions/tilingshell/", "Tiling Shell", ("--schemadir", ts[0])))
+    # Every ENABLED extension that ships a gsettings schema (Tiling Shell, Copyous, Burn My
+    # Windows, ...). Only keys whose value is a list of accelerators survive the filter below.
+    enabled = subprocess.run(["gnome-extensions", "list", "--enabled"], capture_output=True, text=True).stdout.split()
+    for uuid in enabled:
+        for sdir in glob.glob(f"{HOME}/.local/share/gnome-shell/extensions/{uuid}/schemas") + glob.glob(f"/usr/share/gnome-shell/extensions/{uuid}/schemas"):
+            for xml in glob.glob(f"{sdir}/*.gschema.xml"):
+                for sid, spath in re.findall(r'<schema[^>]*\bid="([^"]+)"[^>]*\bpath="([^"]+)"', open(xml).read()):
+                    try: name = json.load(open(f"{HOME}/.local/share/gnome-shell/extensions/{uuid}/metadata.json")).get("name", uuid)
+                    except Exception: name = uuid.split("@")[0]
+                    schemas.append((sid, spath, name, ("--schemadir", sdir)))
     for schema, path, owner, extra in schemas:
         for key, val in gs(schema, extra):
             if not val.startswith("[") or val in ("[]", "@as []") or key in ("selected-layouts",): continue
             accels = re.findall(r"'([^']+)'", val)
+            # accelerator = has a <Modifier> or is a bare key name (Delete, F5); skip prose/paths
+            accels = [a for a in accels if re.fullmatch(r"(<[A-Za-z]+>)*[A-Za-z0-9_]+", a) and ("<" in a or a in KEYNAMES or (len(a) > 1 and a[0].isupper()))]
             if not accels: continue
             star = user_set(path + key)
+            # keys that only act inside an extension's own popup, not globally
+            scope = None
+            if schema.endswith(".copyous") and key not in ("open-clipboard-dialog-shortcut", "toggle-incognito-mode-shortcut"):
+                scope = "inside Copyous popup"
             for acc in accels:
                 rows.append(dict(chord=accel_human(acc), action=key.replace("-", " "),
-                                 becomes="", owner=owner + (" ★" if star else ""), app=None, src=schema))
+                                 becomes="", owner=owner + (" ★" if star else ""), app=scope, src=schema))
     # custom keybindings
     for p in subprocess.run(["dconf", "list", "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/"],
                             capture_output=True, text=True).stdout.split():
