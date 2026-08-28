@@ -2,7 +2,7 @@
 # @vicinae.schemaVersion 1
 # @vicinae.title Ask Claude
 # @vicinae.mode fullOutput
-# @vicinae.icon ✳️
+# @vicinae.icon /home/scottnelson/fedora-bootstrap/vicinae/claude-icon.svg
 # @vicinae.keywords ["ask","claude","ai","how do i","do this","fallback","help"]
 # @vicinae.packageName Claude
 # @vicinae.argument1 { "type": "text", "placeholder": "what do you want done?", "optional": false }

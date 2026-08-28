@@ -2,7 +2,7 @@
 # @vicinae.schemaVersion 1
 # @vicinae.title Claude Usage
 # @vicinae.mode silent
-# @vicinae.icon ✳️
+# @vicinae.icon /home/scottnelson/fedora-bootstrap/vicinae/claude-icon.svg
 # @vicinae.keywords ["claude","usage","limits","quota","rate limit","anthropic","tokens left"]
 # @vicinae.packageName Claude
 # Same endpoint + token as the claude-usage@scottnelson top-bar extension.
