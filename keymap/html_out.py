@@ -56,7 +56,7 @@ def render(rows, probs, focused):
           if not probs else '<div class="health bad">🔴 ' + " &nbsp;·&nbsp; ".join(html.escape(p) for p in probs) + "</div>")
     return f"""<!doctype html><meta charset=utf-8><title>Keymap</title>
 <style>
-:root{{--bg:#101318;--card:#171b22;--fg:#e6e6e6;--dim:#8b93a1;--acc:#7aa2f7;--warn:#f7768e;--kbd:#242a35}}
+:root{{--bg:rgba(16,19,24,.86);--card:#171b22;--fg:#e6e6e6;--dim:#8b93a1;--acc:#7aa2f7;--warn:#f7768e;--kbd:#242a35}}
 *{{box-sizing:border-box}}body{{margin:0;background:var(--bg);color:var(--fg);font:17px/1.4 -apple-system,Inter,system-ui,sans-serif}}
 header{{position:sticky;top:0;background:var(--bg);padding:18px 32px 12px;border-bottom:1px solid #222;z-index:2;display:flex;gap:24px;align-items:center;flex-wrap:wrap}}
 h1{{margin:0;font-size:26px}}h1 span{{color:var(--dim);font-weight:400;font-size:16px;margin-left:12px}}
@@ -77,7 +77,7 @@ footer{{position:fixed;bottom:0;right:0;padding:6px 14px;color:var(--dim);font-s
 <header><h1>Keybindings <span>read live from keyd, dconf, extensions</span></h1>
 <input id=q placeholder="Filter: close, tab, ctrl+w, tiling, chrome…" autofocus>{hb}</header>
 <main>{cmd_html}{apps_html}{gnome_html}</main>
-<footer>Cmd+W closes · type to filter · Esc clears</footer>
+<footer>Cmd+/ or Esc closes · type to filter</footer>
 <script>
 const q=document.getElementById('q'),rows=[...document.querySelectorAll('.row')],secs=[...document.querySelectorAll('section')];
 function f(){{const v=q.value.toLowerCase().trim().split(/\\s+/).filter(Boolean);
