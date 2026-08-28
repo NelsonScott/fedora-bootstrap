@@ -1,8 +1,24 @@
 {
    "$schema": "https://vicinae.com/schemas/config.json",
-   "imports": ["./scott.jsonc"],
-   "telemetry": { "system_info": false },
-   "input_server": { "enabled": false },
-   "global_shortcuts": { "toggle": "" },
+   "imports": [
+      "./scott.jsonc"
+   ],
+   "input_server": {
+      "enabled": false
+   },
+   "global_shortcuts": {
+      "toggle": ""
+   },
+   "theme": {
+      "light": {
+         "name": "catppuccin-mocha"
+      },
+      "dark": {
+         "name": "catppuccin-mocha"
+      }
+   },
+   "telemetry": {
+      "system_info": false
+   },
    "favorites": []
 }
