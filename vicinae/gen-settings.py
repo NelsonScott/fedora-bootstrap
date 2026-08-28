@@ -34,11 +34,7 @@ PANELS = [  # (panel, title, icon, keywords)
 ]
 ACTIONS = [  # (slug, title, icon, keywords, body)
  ("settings", "All Settings", "⚙️", ["settings","system settings","preferences","control center","gnome settings"], "exec gnome-control-center"),
- ("lock-screen", "Lock Screen", "🔐", ["lock","lock screen","lock computer","afk"], "exec loginctl lock-session"),
- ("log-out", "Log Out", "🚪", ["log out","logout","sign out","end session"], "exec gnome-session-quit --logout"),
- ("restart", "Restart", "🔁", ["restart","reboot"], "exec gnome-session-quit --reboot"),
- ("shut-down", "Shut Down", "⏻", ["shut down","shutdown","power off","turn off"], "exec gnome-session-quit --power-off"),
- ("suspend", "Suspend", "🌙", ["suspend","sleep","standby"], "exec systemctl suspend"),
+    # lock/logout/restart/shutdown/suspend intentionally NOT here: Vicinae ships them built in (power:lock, power:logout, ...). One owner per command.
  ("extensions", "Extensions", "🧩", ["extensions","gnome extensions","extension manager","shell extensions"], "exec gnome-extensions-app"),
  ("bluetooth-on", "Bluetooth On", "🟢", ["bluetooth on","enable bluetooth","turn on bluetooth","bt on"], "rfkill unblock bluetooth && notify-send 'Bluetooth' 'Radio unblocked'"),
  ("bluetooth-off", "Bluetooth Off", "🔴", ["bluetooth off","disable bluetooth","turn off bluetooth","bt off"], "rfkill block bluetooth && notify-send 'Bluetooth' 'Radio blocked'"),
