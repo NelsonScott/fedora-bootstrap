@@ -204,3 +204,6 @@ fi
 
 echo ">>> desktop: done. Log out/in to load freshly installed extensions."
 echo ">>> desktop: switch wallpaper overlay styles with: variety-style {a|b|c} [top]"
+
+# Ptyxis copy chord: see keyd/app.conf [*tyxis*] meta.c for why it is not Ctrl+Shift+C.
+gsettings set org.gnome.Ptyxis.Shortcuts copy-clipboard '<ctrl><shift>F20'

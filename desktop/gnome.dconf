@@ -217,11 +217,6 @@ donation-reminder-last-shown=int64 1773366715240026
 custom-keybindings=@as []
 screensaver=['<Super>Escape']
 
-[settings-daemon/plugins/media-keys/custom-keybindings/custom0]
-binding='<Super><Shift>c'
-command='copyq menu'
-name='CopyQ clipboard history'
-
 [settings-daemon/plugins/power]
 idle-brightness=100
 idle-dim=false

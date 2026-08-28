@@ -61,7 +61,7 @@ MEANING = {
     "Ctrl+Shift+Z": "redo", "Ctrl+PgUp": "previous tab", "Ctrl+PgDn": "next tab",
     "Ctrl+←": "word left", "Ctrl+→": "word right", "Ctrl+Backspace": "delete word",
     "Alt+←": "back", "Alt+→": "forward", "Ctrl+Click": "open link in new tab",
-    "Ctrl+Shift+C": "copy (terminal)", "Ctrl+Shift+V": "paste (terminal)",
+    "Ctrl+Shift+C": "copy (terminal)", "Ctrl+Shift+F20": "copy (terminal)", "Ctrl+Shift+V": "paste (terminal)",
     "Ctrl+Shift+W": "close tab (terminal)", "Ctrl+Shift+A": "select all (terminal)",
     "Ctrl+Shift+N": "new window (terminal)", "Ctrl+U": "kill to line start",
     "Ctrl+/": "undo (shell)", "Super+Q": "→ GNOME quit", "Super+Shift+3": "→ GNOME screenshot",
