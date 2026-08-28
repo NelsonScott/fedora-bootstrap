@@ -19,7 +19,7 @@ def running_pid():
 def main(url):
     old = running_pid()
     if old:                       # toggle: second Cmd+/ closes the open window
-        os.kill(old, signal.SIGTERM); os.remove(PID); return
+        os.kill(old, signal.SIGTERM); os.remove(PID); sys.exit(3)   # 3 = toggled closed (wrapper must not retry)
     open(PID, "w").write(str(os.getpid()))
     app = Gtk.Application(application_id="org.scottnelson.keymap")
     def activate(app):
