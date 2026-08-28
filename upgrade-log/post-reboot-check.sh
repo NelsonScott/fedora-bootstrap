@@ -16,5 +16,6 @@ echo "== services";    for u in sous; do systemctl --user is-active $u >/dev/nul
                        curl -sf -m 5 http://127.0.0.1:8477/health >/dev/null 2>&1 && ok "sous /health" || echo "  note sous /health not answering (may still be loading GPU model)"
 echo "== howdy";       rpm -q howdy >/dev/null && ok "howdy installed; test: sudo -k; sudo true (face)" || bad "howdy missing"
 echo "== wifi (info only)"; nmcli -t -f DEVICE,STATE dev 2>/dev/null | grep wlp || echo "  no wlp device"
+echo "== flatpak nvidia runtime"; d=$(nvidia-smi --query-gpu=driver_version --format=csv,noheader 2>/dev/null | tr . -); flatpak list --columns=application 2>/dev/null | grep -q "GL.nvidia-$d" && ok "flatpak GL runtime nvidia-$d present" || bad "flatpak GL runtime for nvidia-$d MISSING: sudo flatpak update -y"
 echo "== dkms";        sudo dkms status 2>/dev/null | sed 's/^/  /'
 echo "== journal errors this boot (top 5)"; journalctl -b -p err --no-pager 2>/dev/null | tail -5 | cut -c1-160 | sed 's/^/  /'
