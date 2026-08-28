@@ -142,7 +142,10 @@ def gnome_rows():
     for uuid in enabled:
         for sdir in glob.glob(f"{HOME}/.local/share/gnome-shell/extensions/{uuid}/schemas") + glob.glob(f"/usr/share/gnome-shell/extensions/{uuid}/schemas"):
             for xml in glob.glob(f"{sdir}/*.gschema.xml"):
-                for sid, spath in re.findall(r'<schema[^>]*\bid="([^"]+)"[^>]*\bpath="([^"]+)"', open(xml).read()):
+                for tag in re.findall(r'<schema\b[^>]*>', open(xml).read()):
+                    sid = re.search(r'\bid="([^"]+)"', tag); spath = re.search(r'\bpath="([^"]+)"', tag)
+                    if not (sid and spath): continue
+                    sid, spath = sid.group(1), spath.group(1)
                     try: name = json.load(open(f"{HOME}/.local/share/gnome-shell/extensions/{uuid}/metadata.json")).get("name", uuid)
                     except Exception: name = uuid.split("@")[0]
                     schemas.append((sid, spath, name, ("--schemadir", sdir)))
