@@ -42,6 +42,7 @@ echo ">>> Vicinae ready: Super+Space. Verify input server is off: pgrep -f vicin
 # --- Script commands (hide windows, corners, screenshot, record, usage, wallpaper) ---
 mkdir -p "$HOME/.local/share/vicinae"
 ln -sfn "$HERE/scripts" "$HOME/.local/share/vicinae/scripts"
+python3 "$HERE/gen-settings.py"   # Settings panels + system actions (GNOME hides the panel .desktop files)
 gsettings set org.gnome.desktop.wm.keybindings show-desktop "['<Control><Super><Alt>h']"   # hide-windows.sh sends this via ydotool
 # Window tiling for the corner/half scripts: our own tiny D-Bus extension (layout-independent,
 # unlike driving Tiling Shell's move-window keys). Needs ONE logout/login to load.
