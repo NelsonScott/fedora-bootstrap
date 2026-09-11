@@ -67,10 +67,9 @@ cd fedora-bootstrap
 
 ## Known issues
 
-- **GNOME Settings > Sound: the Input Device dropdown sometimes closes by itself while hovering
-  the options** (seen 2026-09-11, not reproducible on demand). Ruled out: crashes, PipeWire
-  events (idle suspend is now disabled via `desktop/wireplumber/52-no-suspend.conf`), input
-  devices appearing/disappearing, and keyboard navigation (popover stays open). If it recurs,
-  launch `GDK_DEBUG=events G_MESSAGES_DEBUG=all gnome-control-center sound` from a terminal,
-  reproduce, and read which event closed the popover. Suspects: a shell extension (kiwi,
-  tilingshell, copyous) or keyd-application-mapper dismissing the popup.
+- **(RESOLVED 2026-09-11) GNOME Settings opened from Vicinae died ~10s after launch**, which
+  looked like the Sound panel's dropdown "closing by itself" or Settings "crashing" on click.
+  Cause: Vicinae reaps a silent script command about 10s after launch, and the generated
+  scripts did `exec gnome-control-center ...`, so the app *was* the script. Fix: generators
+  now emit `launch(){ setsid -f "$@"; }` and detach. Rule for any new Vicinae script:
+  **never `exec` a GUI app; detach it.**
