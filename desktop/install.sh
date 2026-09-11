@@ -207,3 +207,20 @@ echo ">>> desktop: switch wallpaper overlay styles with: variety-style {a|b|c} [
 
 # Ptyxis copy chord: see keyd/app.conf [*tyxis*] meta.c for why it is not Ctrl+Shift+C.
 gsettings set org.gnome.Ptyxis.Shortcuts copy-clipboard '<ctrl><shift>F20'
+
+# ---------------------------------------------------------------------------
+# Audio (Sep 2026). Friendly device names in Settings/Zoom, and no idle
+# suspend of ALSA nodes: the Blue Yeti sometimes wedges when PipeWire re-opens
+# it after idle (RUNNING but zero frames; only a USB reset clears it), and the
+# suspend events make GNOME Settings' Sound dropdown close by itself.
+# usb-replug is the root half of the Vicinae "Reset Yeti Mic" command; it is
+# installed root-owned in /usr/local/bin so pkexec can't be pointed at a
+# user-writable file.
+# ---------------------------------------------------------------------------
+echo ">>> desktop: audio (wireplumber names, no-suspend, usb-replug, udev)"
+mkdir -p "$HOME/.config/wireplumber/wireplumber.conf.d"
+cp "$DIR"/wireplumber/*.conf "$HOME/.config/wireplumber/wireplumber.conf.d/"
+systemctl --user restart wireplumber || true
+sudo install -o root -g root -m 755 "$DIR/bin/usb-replug" /usr/local/bin/usb-replug
+sudo install -o root -g root -m 644 "$DIR/udev/50-usb-no-autosuspend.rules" /etc/udev/rules.d/
+sudo udevadm control --reload && sudo udevadm trigger --subsystem-match=usb

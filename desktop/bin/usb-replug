@@ -1,0 +1,16 @@
+#!/bin/bash
+# Simulate unplug/replug of a USB device by unbinding and rebinding it from the usb driver.
+# Usage: usb-replug <substring of product name>   (run as root, e.g. via pkexec or sudo)
+# Example: usb-replug "Blue Microphones"
+[[ $EUID -eq 0 ]] || { echo "must run as root (pkexec/sudo)"; exit 1; }
+PAT="${1:?product-name substring required}"
+DEV=""
+for d in /sys/bus/usb/devices/*; do
+  [[ -f $d/product ]] && grep -qi -- "$PAT" "$d/product" && DEV=$(basename "$d") && break
+done
+[[ -n $DEV ]] || { echo "no USB device matching '$PAT'"; exit 2; }
+echo "resetting $DEV ($(cat /sys/bus/usb/devices/$DEV/product))"
+echo "$DEV" > /sys/bus/usb/drivers/usb/unbind
+sleep 2
+echo "$DEV" > /sys/bus/usb/drivers/usb/bind
+echo "done"

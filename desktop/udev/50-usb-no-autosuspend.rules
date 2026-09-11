@@ -1,0 +1,5 @@
+# Keep the Blue Yeti (046d:0ab7) and the GenesysLogic hub it hangs off (05e3:0610) powered.
+# The kernel's default is to let hubs runtime-suspend; USB audio devices are notorious for
+# not coming back cleanly. Belt-and-braces alongside desktop/wireplumber/52-no-suspend.conf.
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="0ab7", TEST=="power/control", ATTR{power/control}="on"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="05e3", ATTR{idProduct}=="0610", TEST=="power/control", ATTR{power/control}="on"
