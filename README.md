@@ -64,3 +64,13 @@ cd fedora-bootstrap
 - **Visible.** `set -x` echoes each command so nothing happens behind your back.
 - **Checklists over magic.** Symlinks, app choices, and browser extensions are
   Markdown you run by hand — migration is a judgment call, not a black box.
+
+## Known issues
+
+- **GNOME Settings > Sound: the Input Device dropdown sometimes closes by itself while hovering
+  the options** (seen 2026-09-11, not reproducible on demand). Ruled out: crashes, PipeWire
+  events (idle suspend is now disabled via `desktop/wireplumber/52-no-suspend.conf`), input
+  devices appearing/disappearing, and keyboard navigation (popover stays open). If it recurs,
+  launch `GDK_DEBUG=events G_MESSAGES_DEBUG=all gnome-control-center sound` from a terminal,
+  reproduce, and read which event closed the popover. Suspects: a shell extension (kiwi,
+  tilingshell, copyous) or keyd-application-mapper dismissing the popup.
