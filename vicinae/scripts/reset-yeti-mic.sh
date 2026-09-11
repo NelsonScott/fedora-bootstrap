@@ -17,7 +17,10 @@ pkexec "$HELPER" "Blue Microphones" || { echo "reset failed / auth cancelled"; e
 for i in $(seq 1 20); do sleep 1; SRC=$(findsrc); [[ -n $SRC ]] && break; done   # re-enumeration can take ~10s
 [[ -n $SRC ]] || { echo "Yeti did not come back on PipeWire after 20s; try a physical replug"; exit 1; }
 pactl set-default-source "$SRC"; pactl set-source-mute "$SRC" 0; pactl set-source-volume "$SRC" "$VOL"
-echo "default mic -> Yeti (volume restored to $VOL). Say something..."
+echo "default mic -> Yeti (volume restored to $VOL)."
+# Vicinae only renders fullOutput when the script exits, so cue the 3s test via a notification.
+notify-send -t 3500 -i audio-input-microphone "Yeti reset" "Say something for 3 seconds..." 2>/dev/null || true
+sleep 0.5
 W="${XDG_RUNTIME_DIR:-/tmp}/yeti-test.wav"
 timeout -s INT 3 pw-record --target "$SRC" --rate 16000 --channels 1 "$W" >/dev/null 2>&1
 python3 - "$W" <<'PY'
@@ -29,5 +32,5 @@ except Exception as e:
 secs=len(a)/rate; peak=max((abs(x) for x in a),default=0)
 if secs<1: print("STILL HUNG: device present but delivered 0 seconds of audio. Physically replug the Yeti.")
 elif peak<500: print(f"streaming OK ({secs:.1f}s) but silent (peak {peak}). Check the Yeti's physical mute button (red LED blinking = muted).")
-else: print(f"Yeti is live: {secs:.1f}s recorded, peak {peak}.")
+else: print(f"Yeti is live: {secs:.1f}s recorded, peak {peak} (room noise alone reads ~1-2k; speech 5k+).")
 PY
