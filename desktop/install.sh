@@ -222,5 +222,5 @@ mkdir -p "$HOME/.config/wireplumber/wireplumber.conf.d"
 cp "$DIR"/wireplumber/*.conf "$HOME/.config/wireplumber/wireplumber.conf.d/"
 systemctl --user restart wireplumber || true
 sudo install -o root -g root -m 755 "$DIR/bin/usb-replug" /usr/local/bin/usb-replug
-sudo install -o root -g root -m 644 "$DIR/udev/50-usb-no-autosuspend.rules" /etc/udev/rules.d/
+sudo install -o root -g root -m 644 "$DIR/udev/70-usb-no-autosuspend.rules" /etc/udev/rules.d/
 sudo udevadm control --reload && sudo udevadm trigger --action=add --subsystem-match=usb

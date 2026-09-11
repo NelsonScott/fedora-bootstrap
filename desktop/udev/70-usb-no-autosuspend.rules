@@ -1,3 +1,4 @@
+# Numbered 70- so it runs AFTER the stock 60-autosuspend.rules, which sets hubs back to auto.
 # Keep the Blue Yeti (046d:0ab7) and the GenesysLogic hub it hangs off (05e3:0610) powered.
 # The kernel's default is to let hubs runtime-suspend; USB audio devices are notorious for
 # not coming back cleanly. Belt-and-braces alongside desktop/wireplumber/52-no-suspend.conf.

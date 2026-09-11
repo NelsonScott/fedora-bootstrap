@@ -1,9 +1,9 @@
 #!/bin/bash
 # @vicinae.schemaVersion 1
-# @vicinae.title Reset Yeti Mic (USB replug)
+# @vicinae.title Fix Audio (reset Yeti mic)
 # @vicinae.mode fullOutput
 # @vicinae.icon 🎤
-# @vicinae.keywords ["yeti","mic","microphone","reset","replug","audio","blue","zoom mic"]
+# @vicinae.keywords ["fix audio","fix mic","audio","mic","microphone","yeti","reset","replug","blue","zoom mic","no sound"]
 # @vicinae.packageName Desktop
 # The Blue Yeti sometimes hangs: PipeWire shows it RUNNING/unmuted but it delivers zero samples.
 # Restarting PipeWire does nothing; only a USB unbind/bind (what a physical replug does) fixes it.
@@ -17,10 +17,7 @@ pkexec "$HELPER" "Blue Microphones" || { echo "reset failed / auth cancelled"; e
 for i in $(seq 1 20); do sleep 1; SRC=$(findsrc); [[ -n $SRC ]] && break; done   # re-enumeration can take ~10s
 [[ -n $SRC ]] || { echo "Yeti did not come back on PipeWire after 20s; try a physical replug"; exit 1; }
 pactl set-default-source "$SRC"; pactl set-source-mute "$SRC" 0; pactl set-source-volume "$SRC" "$VOL"
-echo "default mic -> Yeti (volume restored to $VOL)."
-# Vicinae only renders fullOutput when the script exits, so cue the 3s test via a notification.
-notify-send -t 3500 -i audio-input-microphone "Yeti reset" "Say something for 3 seconds..." 2>/dev/null || true
-sleep 0.5
+echo "default mic -> Yeti (volume restored to $VOL). Running a 3s capture test (optionally say something)."
 W="${XDG_RUNTIME_DIR:-/tmp}/yeti-test.wav"
 timeout -s INT 3 pw-record --target "$SRC" --rate 16000 --channels 1 "$W" >/dev/null 2>&1
 python3 - "$W" <<'PY'
