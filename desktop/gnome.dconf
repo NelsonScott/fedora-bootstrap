@@ -495,6 +495,10 @@ switch-to-application-9=@as []
 locations=@av []
 
 [software]
+# 2026-09-15: never auto-install Flatpak updates in the background. GNOME Software swapped
+# org.freedesktop.Platform under a running Steam (Jul 11, Sep 15) and every game launch
+# died until Steam was restarted. Updates still show as pending in the Software app.
+download-updates=false
 check-timestamp=int64 1787238771
 first-run=false
 flatpak-purge-timestamp=int64 1787185688

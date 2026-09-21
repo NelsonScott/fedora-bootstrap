@@ -6,7 +6,7 @@ Re-run after installing/removing games (install.sh runs it; or `python3 gen-stea
 import glob, json, os, re, stat
 HERE = os.path.dirname(os.path.abspath(__file__)); OUT = os.path.join(HERE, "scripts")
 LIB = os.path.expanduser("~/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps")
-STEAM = "flatpak run com.valvesoftware.Steam"
+STEAM = '"$HOME/.local/bin/steam-launch"'  # forwards + recovers a wedged client (see steam-launch)
 SKIP = {"Proton", "Steam Linux Runtime", "Steamworks Common"}   # tools, not games
 PAGES = [  # (slug, title, icon, keywords, url)
  ("library",   "Steam Library",      "🎮", ["steam","library","games","steam library"],                 "steam://open/games"),

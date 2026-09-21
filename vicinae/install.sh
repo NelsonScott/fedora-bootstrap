@@ -43,6 +43,9 @@ echo ">>> Vicinae ready: Super+Space. Verify input server is off: pgrep -f vicin
 mkdir -p "$HOME/.local/share/vicinae"
 ln -sfn "$HERE/scripts" "$HOME/.local/share/vicinae/scripts"
 python3 "$HERE/gen-settings.py"   # Settings panels + system actions (GNOME hides the panel .desktop files)
+python3 "$HERE/gen-steam.py"      # Play <game> + Steam pages (Steam has no palette of its own)
+mkdir -p "$HOME/.local/bin"
+ln -sfn "$HERE/steam-launch" "$HOME/.local/bin/steam-launch"   # gen-steam.py scripts call this (recovers a wedged Steam client)
 gsettings set org.gnome.desktop.wm.keybindings show-desktop "['<Control><Super><Alt>h']"   # hide-windows.sh sends this via ydotool
 # Window tiling for the corner/half scripts: our own tiny D-Bus extension (layout-independent,
 # unlike driving Tiling Shell's move-window keys). Needs ONE logout/login to load.

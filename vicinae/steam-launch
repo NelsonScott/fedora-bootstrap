@@ -1,0 +1,99 @@
+#!/bin/bash
+# steam-launch [steam://url ...] — launch Steam (Flatpak) and recover from the wedges that
+# made "nothing happens" a weekly event (10 dead-launch bursts, Aug 29 to Sep 19 2026):
+#   * 2026-09-19: after a 3 h KVM/monitor drop the client kept its main window unmapped and
+#     silently swallowed six launches (the Flatpak wrapper forwards to a running client via
+#     steam.pipe and exits 0 either way).
+#   * 2026-09-11 / 09-15: xdg-document-portal died or lost its mount, so bwrap failed silently.
+# Everything after the fork runs detached, so Vicinae's reaper and the launcher never wait.
+# Test mode: STEAM_LAUNCH_FLATPAK / STEAM_LAUNCH_STEAMDIR / STEAM_LAUNCH_LOG / *_WAIT /
+# STEAM_LAUNCH_GAME_RUNNING point everything at fakes (see steam-launch-test.sh).
+set -u
+APP=com.valvesoftware.Steam
+FLATPAK=${STEAM_LAUNCH_FLATPAK:-/usr/bin/flatpak}
+STEAMDIR=${STEAM_LAUNCH_STEAMDIR:-$HOME/.var/app/$APP/.local/share/Steam}
+WEBHELPER=$STEAMDIR/logs/webhelper.txt
+CONTENT=$STEAMDIR/logs/content_log.txt
+LOG=${STEAM_LAUNCH_LOG:-$HOME/.local/state/steam-launch.log}
+WAIT=${STEAM_LAUNCH_WAIT:-12}            # main window must (re)appear within this
+WAIT_GAME=${STEAM_LAUNCH_WAIT_GAME:-45}  # a game must reach "App Running" within this
+DOC=/run/user/$UID/doc
+mkdir -p "$(dirname "$LOG")"
+log(){ printf '%s %s\n' "$(date '+%F %T')" "$*" >> "$LOG"; }
+
+if [ "${1:-}" != "--worker" ]; then
+  setsid -f "$0" --worker "$@" >/dev/null 2>&1
+  exit 0
+fi
+shift
+URL=${1:-}
+log "request: ${*:-(no url)}"
+
+portal_ok(){ findmnt -rn "$DOC" >/dev/null 2>&1 && systemctl --user is-active --quiet xdg-document-portal; }
+fix_portal(){
+  if ! portal_ok; then
+    log "xdg-document-portal unhealthy: restarting it (bwrap fails silently otherwise)"
+    systemctl --user restart xdg-document-portal; sleep 1
+  fi
+}
+running(){ "$FLATPAK" ps --columns=application 2>/dev/null | grep -qx "$APP"; }
+game_running(){
+  [ "${STEAM_LAUNCH_GAME_RUNNING:-}" = "1" ] && return 0
+  [ "${STEAM_LAUNCH_GAME_RUNNING:-}" = "0" ] && return 1
+  pgrep -f 'reaper SteamLaunch AppId=' >/dev/null 2>&1
+}
+newlines(){ tail -n 400 "$1" 2>/dev/null | awk -v s="$SINCE" 'substr($0,2,19) >= s'; }
+main_window_hidden(){
+  # last known state of the main window, from webhelper.txt ("WasHidden 1" = unmapped)
+  grep -E "SP Desktop_uid0-'Steam': WasHidden [01]" "$WEBHELPER" 2>/dev/null | tail -1 | grep -q 'WasHidden 1'
+}
+cold_start(){
+  fix_portal
+  log "cold start: flatpak run $APP $*"
+  setsid -f "$FLATPAK" run "$APP" "$@" >/dev/null 2>&1
+}
+recover(){
+  log "recovering: flatpak kill $APP"
+  "$FLATPAK" kill "$APP" >/dev/null 2>&1
+  for _ in $(seq 1 15); do running || break; sleep 1; done
+  running && log "warning: client still running after kill"
+  # the portal died with status 21 the moment Steam was killed on 2026-09-19
+  sleep 1; fix_portal
+  cold_start "$@"
+}
+
+if ! running; then
+  cold_start "$@"; log "done: cold start (no client was running)"; exit 0
+fi
+
+SINCE=$(date -d '-1 second' '+%Y-%m-%d %H:%M:%S')
+was_hidden=0; main_window_hidden && was_hidden=1
+"$FLATPAK" run "$APP" "$@" >/dev/null 2>&1   # forwards to the running client and exits
+log "forwarded to running client (main window hidden before: $was_hidden)"
+
+case "$URL" in
+  steam://rungameid/*)
+    id=${URL#steam://rungameid/}; id=${id%%/*}
+    if game_running; then log "done: a game is already running, leaving the client alone"; exit 0; fi
+    for _ in $(seq 1 "$WAIT_GAME"); do
+      if newlines "$CONTENT" | grep -q "AppID $id state changed : .*App Running" || game_running; then
+        log "done: game $id started"; exit 0
+      fi
+      sleep 1
+    done
+    log "client swallowed the game launch ($id) for ${WAIT_GAME}s"
+    recover "$@"; log "done: recovered (game launch)"; exit 0 ;;
+  ""|steam://open/*|steam://store*|steam://url/*|steam://openurl/*|steam://nav/*)
+    if [ "$was_hidden" = 0 ]; then log "done: main window already visible"; exit 0; fi
+    for _ in $(seq 1 "$WAIT"); do
+      if newlines "$WEBHELPER" | grep -q "SP Desktop_uid0-'Steam': WasHidden 0"; then
+        log "done: main window shown"; exit 0
+      fi
+      sleep 1
+    done
+    if game_running; then log "done: window not shown but a game is running, not touching it"; exit 0; fi
+    log "client swallowed the launch: main window still hidden after ${WAIT}s"
+    recover "$@"; log "done: recovered (main window)"; exit 0 ;;
+  *)
+    log "done: forwarded unknown url, not judging"; exit 0 ;;
+esac

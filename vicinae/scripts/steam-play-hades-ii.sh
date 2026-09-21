@@ -9,4 +9,4 @@
 export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
 # Vicinae kills a silent script ~10s after launch, so never exec a GUI app: detach it.
 launch(){ setsid -f "$@" >/dev/null 2>&1; }
-launch flatpak run com.valvesoftware.Steam steam://rungameid/1145350
+launch "$HOME/.local/bin/steam-launch" steam://rungameid/1145350

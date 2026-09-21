@@ -1,17 +1,51 @@
-/* 2a "Warm graphite" — menu surfaces come from Open Bar; this styles content.
-   Palette: Claude orange #d97757 · amber #e0a458 · verdigris #5fa8a0
-   fg #f2ece2 on warm charcoal. */
-.claude-usage-label { font-weight: 600; font-feature-settings: "tnum"; text-shadow: 0 0 2px rgba(0,0,0,0.9), 0 1px 1px rgba(0,0,0,0.8); }
-.claude-usage-warn { color: #e0a458; }
-.claude-usage-crit { color: #e89275; }
+/* Layout "2d" from the Claude Design project "Open Router widget design"
+   (Menu Bar Widget.dc.html): grouped Claude / OpenRouter sections, 4px bars,
+   sub-text beside the bar, one-line footer, OpenRouter shown as "$ left".
+   Palette: cream #f4f0ea · muted #9a948c · orange #e07a4f · amber #e8a04c
+            teal #5fb3a1 · red #d96a5b · track #454548 · surface #2e2e30 */
+
+/* ---- panel (top bar) ---- */
+.claude-usage-box { spacing: 6px; }
+.claude-usage-icon { icon-size: 16px; padding: 0; margin-right: 1px; color: #e07a4f; }
+.claude-usage-label { font-size: 14px; font-weight: 600; color: #f4e8d8; font-feature-settings: "tnum";
+                      text-shadow: 0 0 2px rgba(0,0,0,0.9), 0 1px 1px rgba(0,0,0,0.8); }
+.claude-usage-week  { font-size: 12px; font-weight: 500; color: #8a8a8e; font-feature-settings: "tnum";
+                      text-shadow: 0 0 2px rgba(0,0,0,0.9), 0 1px 1px rgba(0,0,0,0.8); }
+.claude-usage-warn  { color: #e8a04c; }
+.claude-usage-crit  { color: #d96a5b; font-weight: 600; }
 .claude-usage-stale { color: #9a938a; }
-.claude-usage-row { padding: 7px 12px; }
-.claude-usage-title { font-weight: 700; color: #f2ece2; }
-.claude-usage-sub { color: rgba(242,236,226,0.55); font-size: 0.88em; }
-.claude-usage-bar-bg { background-color: rgba(255,255,255,0.10); border-radius: 3px; height: 5px; width: 260px; margin-top: 5px; }
-.claude-usage-bar-ok   { background-color: #5fa8a0; border-radius: 3px; height: 5px; }
-.claude-usage-bar-warn { background-color: #e0a458; border-radius: 3px; height: 5px; }
-.claude-usage-bar-crit { background-color: #d97757; border-radius: 3px; height: 5px; }
-.claude-usage-icon { icon-size: 16px; padding: 0; margin-right: 3px; color: #d97757; }
-.claude-usage-box { spacing: 3px; }
-.claude-usage-link { color: #d97757; font-weight: 600; }
+
+/* ---- dropdown surface ---- */
+.claude-usage-menu .popup-menu-content { background-color: #2e2e30; border-radius: 18px; padding: 14px 0 8px; }
+.claude-usage-menu .popup-separator-menu-item { margin: 6px 20px 8px; }
+.claude-usage-menu .popup-separator-menu-item .popup-separator-menu-item-separator { background-color: #454548; height: 1px; margin: 0; }
+
+/* section header: "CLAUDE" / "OPENROUTER" */
+.claude-usage-hdr { padding: 4px 20px 2px; }
+.claude-usage-hdr-text { font-size: 11px; font-weight: 600; color: #9a948c; }
+
+/* rows */
+.claude-usage-row { padding: 8px 20px 10px; min-width: 300px; }
+.claude-usage-rowbox { spacing: 6px; }
+.claude-usage-name  { font-size: 14px; font-weight: 600; color: #f4f0ea; }
+.claude-usage-value { font-size: 15px; font-weight: 700; color: #f4f0ea; font-feature-settings: "tnum"; }
+.claude-usage-value-amber { color: #e8a04c; }
+.claude-usage-value-suffix { font-size: 12px; font-weight: 500; color: #9a948c; margin-left: 4px; }
+.claude-usage-barline { spacing: 10px; }
+.claude-usage-bar-bg { background-color: #454548; border-radius: 2px; height: 4px; min-width: 0; }
+.claude-usage-bar-ok    { background-color: #5fb3a1; border-radius: 2px; height: 4px; }
+.claude-usage-bar-warn  { background-color: #e8a04c; border-radius: 2px; height: 4px; }
+.claude-usage-bar-crit  { background-color: #d96a5b; border-radius: 2px; height: 4px; }
+.claude-usage-bar-amber { background-color: #e8a04c; border-radius: 2px; height: 4px; }
+.claude-usage-sub { font-size: 11px; color: #9a948c; }
+
+/* footer: "Updated 2:02 PM · every 2 min      Refresh" */
+.claude-usage-footer { padding: 6px 20px; }
+.claude-usage-footer-text { font-size: 11px; color: #9a948c; }
+.claude-usage-refresh { font-size: 12px; font-weight: 600; color: #cfc9c0; }
+.claude-usage-footer:hover .claude-usage-refresh { color: #ffffff; }
+
+/* "claude.ai →" */
+.claude-usage-linkrow { padding: 8px 20px 10px; }
+.claude-usage-link { font-size: 13px; font-weight: 600; color: #e07a4f; }
+.claude-usage-linkrow:hover .claude-usage-link { color: #c9683f; }
