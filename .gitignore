@@ -2,3 +2,6 @@
 *.backup
 .DS_Store
 __pycache__/
+# Upgrade snapshots (rpm -qa, dnf logs) are local-only; README.md keeps the rollback notes.
+upgrade-log/2026-08-28-*
+upgrade-log/*.log
