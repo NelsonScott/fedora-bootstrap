@@ -16,7 +16,8 @@ WEBHELPER=$STEAMDIR/logs/webhelper.txt
 CONTENT=$STEAMDIR/logs/content_log.txt
 LOG=${STEAM_LAUNCH_LOG:-$HOME/.local/state/steam-launch.log}
 WAIT=${STEAM_LAUNCH_WAIT:-12}            # main window must (re)appear within this
-WAIT_GAME=${STEAM_LAUNCH_WAIT_GAME:-45}  # a game must reach "App Running" within this
+WAIT_GAME=${STEAM_LAUNCH_WAIT_GAME:-45}  # a game must reach "App Running" within this, IF the client reacted at all
+WAIT_REACT=${STEAM_LAUNCH_WAIT_REACT:-8}  # a live client logs SOME state change for the app within 1-2 s (9 of 9 healthy launches)
 DOC=/run/user/$UID/doc
 mkdir -p "$(dirname "$LOG")"
 log(){ printf '%s %s\n' "$(date '+%F %T')" "$*" >> "$LOG"; }
@@ -75,13 +76,19 @@ case "$URL" in
   steam://rungameid/*)
     id=${URL#steam://rungameid/}; id=${id%%/*}
     if game_running; then log "done: a game is already running, leaving the client alone"; exit 0; fi
+    waited=0
     for _ in $(seq 1 "$WAIT_GAME"); do
       if newlines "$CONTENT" | grep -q "AppID $id state changed : .*App Running" || game_running; then
         log "done: game $id started"; exit 0
       fi
-      sleep 1
+      sleep 1; waited=$((waited + 1))
+      # A wedged client logs NOTHING for the app. A healthy one that is merely busy (update, validate,
+      # shader processing) logs other state changes first, so only that case earns the long wait.
+      if [ "$waited" -ge "$WAIT_REACT" ] && ! newlines "$CONTENT" | grep -q "AppID $id state changed"; then
+        break
+      fi
     done
-    log "client swallowed the game launch ($id) for ${WAIT_GAME}s"
+    log "client swallowed the game launch ($id) for ${waited}s"
     recover "$@"; log "done: recovered (game launch)"; exit 0 ;;
   ""|steam://open/*|steam://store*|steam://url/*|steam://openurl/*|steam://nav/*)
     if [ "$was_hidden" = 0 ]; then log "done: main window already visible"; exit 0; fi
