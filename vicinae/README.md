@@ -40,7 +40,7 @@ apps/files/settings, not actions.
 | Record Screen (start/stop) | record, rec, screencast | `org.gnome.Shell.Screencast` D-Bus toggle, saves to ~/Videos/Screencasts |
 | Claude Usage | usage, limits, quota | same OAuth endpoint as the top-bar extension, prints bars |
 | Next Wallpaper | wallpaper, background | `variety -n` |
-| Glance Dashboard (toggle) | glance, dashboard, screensaver | kiosk Chrome on localhost:8090 with its own profile (`~/.cache/glance-manual-chrome`); run again or Alt+F4 to close. The idle version is `glance-idle.service` |
+| Glance Dashboard (toggle) | glance, dashboard, screensaver | kiosk Chrome on localhost:8090 with its own profile (`~/.cache/glance-manual-chrome`); Esc, Alt+F4, or run again to close (Esc lives in the dashboard's live.js, gated on `?kiosk=1`). The idle version is `glance-idle.service` |
 | Layout: 5 Tiles / 3 Columns / 1/3+2/3 / 2/3+1/3 / Top-Bottom | layout, grid, tiling, portrait | `_layout.sh` rewrites Tiling Shell `selected-layouts` via dconf. First four default to the 32" (arg `second` for the 22"); Top/Bottom defaults to the 22" (arg `main`). Layout ids in `layouts-json` were renamed to match. Extension applies live. |
 
 Why ydotool works here: ydotoold already runs as the user (dictation), and keyd ignores its virtual

@@ -5,10 +5,10 @@
 # @vicinae.icon 📊
 # @vicinae.keywords ["glance","dashboard","screensaver","show dashboard","feeds"]
 # @vicinae.packageName Desktop
-# Toggle: opens the Glance dashboard fullscreen (same page as glance-idle.service); run again or Alt+F4 to close.
+# Toggle: opens the Glance dashboard fullscreen (same page as glance-idle.service); Esc, Alt+F4, or run again to close.
 # Own Chrome profile so it never collides with the idle screensaver's (~/.cache/glance-idle-chrome) or Scott's main one.
 export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
-URL="http://localhost:8090/"
+URL="http://localhost:8090/?kiosk=1"   # ?kiosk=1 turns on Esc-to-close in live.js
 PROFILE="$HOME/.cache/glance-manual-chrome"
 # Vicinae kills a silent script ~10s after launch, so never exec a GUI app: detach it.
 launch(){ setsid -f "$@" >/dev/null 2>&1; }
