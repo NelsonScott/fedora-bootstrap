@@ -7,8 +7,6 @@ and fixes I collected over the following months.
 It is my machine, not a distro. Some pieces are tied to my hardware (5090, Logitech Brio,
 Blue Yeti, a 4K monitor). Read a piece before you run it, and take what is useful.
 
-<!-- screenshot: desktop.png goes here -->
-
 ## The useful bits, if you are coming from a Mac
 
 | Piece | What it gives you | Where |
