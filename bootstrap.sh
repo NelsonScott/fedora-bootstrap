@@ -73,14 +73,21 @@ sudo dnf upgrade --refresh -y
 #    !!! your running kernel first (can take a few minutes — watch with
 #    !!! `modinfo -F version nvidia` until it prints a version, then reboot).
 #
-#    Secure Boot note: if Secure Boot is enabled, unsigned akmods won't load.
-#    Either disable Secure Boot in BIOS, or enroll the akmods key (see
-#    `sudo akmods --force` + `mokutil`). Easiest on a fresh box: disable it.
+#    Secure Boot note: with Secure Boot on, unsigned akmods won't load. Enroll
+#    the akmods MOK key once (sudo kmodgenca -a; sudo mokutil --import
+#    /etc/pki/akmods/certs/public_key.der; reboot and pick "Enroll MOK").
+#    Kernel updates then re-sign the module automatically.
+#
+#    Skipped automatically when no NVIDIA GPU is present.
 # ---------------------------------------------------------------------------
-step "Step 3/11  NVIDIA driver for RTX 5090 (akmod-nvidia + CUDA) — REBOOT after!"
-sudo dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda
-# Kick off the module build now so it's ready by the time you reboot.
-sudo akmods --force || true
+step "Step 3/11  NVIDIA driver (akmod-nvidia + CUDA) — REBOOT after!"
+if lspci | grep -qi nvidia; then
+  sudo dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda
+  # Kick off the module build now so it's ready by the time you reboot.
+  sudo akmods --force || true
+else
+  echo "No NVIDIA GPU found, skipping the driver."
+fi
 
 # ---------------------------------------------------------------------------
 # 4. DNF packages (from packages/dnf.txt)
@@ -219,6 +226,7 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys screensaver "['<Super
 # ---------------------------------------------------------------------------
 step "Step 8/11  GNOME desktop settings (macOS-style QoL)"
 # Window buttons: GNOME hides minimize/maximize by default — put them back.
+# (The opt-in desktop/install.sh restyle moves them to the left in Mac order.)
 gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
 # Natural scrolling like macOS. GNOME defaults the touchpad to natural but
 # leaves the mouse wheel "traditional" and gives it no Settings-GUI toggle, so
@@ -288,8 +296,14 @@ fi
 #     Nemotron word-streaming (GPU) + Whisper large-v3 fallback. Details and
 #     revert instructions: dictation/README.md
 # ---------------------------------------------------------------------------
+#     OPT-IN: several GB of models and CUDA libraries, plus root udev rules.
+#     Run with BOOTSTRAP_DICTATION=1 to include it.
 step "Step 10/11  Dictation (double-tap Ctrl, local Whisper/Nemotron)"
-bash "$REPO_DIR/dictation/install.sh"
+if [[ "${BOOTSTRAP_DICTATION:-0}" == 1 ]]; then
+  bash "$REPO_DIR/dictation/install.sh"
+else
+  echo "Skipped (set BOOTSTRAP_DICTATION=1 to install). See dictation/README.md"
+fi
 
 # ---------------------------------------------------------------------------
 # 11. Desktop restyle — Mac-like GNOME (extensions, icons/cursor, Qt theming)
@@ -297,8 +311,14 @@ bash "$REPO_DIR/dictation/install.sh"
 #     Details, gotchas, and the DO-NOT-INSTALL Blur-my-Shell warning:
 #     desktop/README.md
 # ---------------------------------------------------------------------------
+#     OPT-IN: changes your theme, cursor, icons, extensions and wallpaper.
+#     Run with BOOTSTRAP_DESKTOP=1 to include it.
 step "Step 11/11  Desktop restyle (Mac-like GNOME + wallpaper rig)"
-bash "$REPO_DIR/desktop/install.sh"
+if [[ "${BOOTSTRAP_DESKTOP:-0}" == 1 ]]; then
+  bash "$REPO_DIR/desktop/install.sh"
+else
+  echo "Skipped (set BOOTSTRAP_DESKTOP=1 to install). See desktop/README.md"
+fi
 
 # ---------------------------------------------------------------------------
 # 12. Next steps
@@ -310,11 +330,12 @@ cat <<'STEPS'
   BOOTSTRAP COMPLETE — next steps (do these in order)
 ============================================================================
 
-  1. REBOOT NOW. The NVIDIA akmod needs a reboot to load the driver.
-       Verify after reboot:  nvidia-smi   (should list your RTX 5090)
+  1. REBOOT NOW. The NVIDIA akmod (if installed) needs a reboot to load.
+       Verify after reboot:  nvidia-smi   (should list your GPU)
 
   2. Log out and back in once more so the keyd swap + zsh default shell
-     take full effect. Test: Ctrl now sits next to the spacebar.
+     take full effect. Test: the key next to the spacebar now acts as Cmd
+     (Super): Super+C copies, Super+T opens a new tab.
 
   3. Generate an SSH key and add it to GitHub:
        ssh-keygen -t ed25519 -C "you@example.com"
@@ -324,7 +345,7 @@ cat <<'STEPS'
        gh auth login                  # then: gh ssh-key add ~/.ssh/id_ed25519.pub
 
   4. Clone your dotfiles and create symlinks:
-       git clone git@github.com:NelsonScott/dotfiles.git ~/dotfiles
+       git clone git@github.com:<you>/dotfiles.git ~/dotfiles
      Then follow dotfiles-symlinks.md (run the ln commands one at a time).
 
   5. Install Claude Code:
@@ -333,7 +354,7 @@ cat <<'STEPS'
   6. Apply window-management shortcuts: see RECTANGLE_KEYS.md
      (install Tiling Shell from the GNOME Extensions site — link inside).
 
-  7. Work through MIGRATION.md (apps) and CHROME_EXTENSIONS.md (Firefox).
+  7. Work through MIGRATION.md (apps) and FIREFOX_EXTENSIONS.md (add-ons).
 
 ============================================================================
 STEPS

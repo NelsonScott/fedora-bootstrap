@@ -13,7 +13,7 @@ Blue Yeti, a 4K monitor). Read a piece before you run it, and take what is usefu
 |---|---|---|
 | **Cmd key that works** | keyd swaps the bottom row so the key next to space acts like Cmd: Cmd+C/V/X/T/W/Q, Option word-jumps. Per-app overrides so in the terminal Cmd+C copies and Ctrl+C still interrupts. | [`keyd/`](keyd/) |
 | **Spotlight / Raycast** | [Vicinae](https://github.com/vicinaehq/vicinae) on Super+Space, with script commands for window corners and layouts, every GNOME Settings panel, Steam, screenshots, and asking Claude. | [`vicinae/`](vicinae/) |
-| **Mac-ish desktop** | Dash to Dock, Kiwi (Mac-style panel and menu), rounded window corners, macOS cursor, WhiteSur icons, Qt apps themed to match. | [`desktop/`](desktop/) |
+| **Mac-ish desktop** | Kiwi (Mac-style panel and menu), rounded window corners, macOS cursor, WhiteSur icons, Qt apps themed to match. Pairs with Dash to Dock from Fedora's repos. | [`desktop/`](desktop/) |
 | **Wallpapers with quotes and a clock** | Variety rotating 4K Bing and Unsplash images, with a styled quote and clock drawn on. Includes fixes for Variety on Wayland and fractional scaling. | [`desktop/variety/`](desktop/variety/) |
 | **Rectangle replacement** | My Rectangle shortcuts mapped to Tiling Shell. | [`RECTANGLE_KEYS.md`](RECTANGLE_KEYS.md) |
 | **Every shortcut on one page** | Cmd+/ opens a page listing every keybinding on the system, read live from keyd and GNOME, with a health check for conflicts. | [`keymap/`](keymap/) |
@@ -35,10 +35,15 @@ less bootstrap.sh     # read it first, it is short
 ./bootstrap.sh        # no sudo, it asks for sudo where needed
 ```
 
-`bootstrap.sh` does: system update, RPM Fusion, the NVIDIA driver, CLI packages from
-[`packages/dnf.txt`](packages/dnf.txt), Flatpaks from
-[`packages/flatpak.txt`](packages/flatpak.txt), Node.js, keyd, and zsh with oh-my-zsh.
-Then reboot (the NVIDIA driver needs it) and check `nvidia-smi`.
+`bootstrap.sh` does: system update, RPM Fusion, the NVIDIA driver (only if an NVIDIA GPU
+is present), CLI packages from [`packages/dnf.txt`](packages/dnf.txt), Flatpaks from
+[`packages/flatpak.txt`](packages/flatpak.txt), Node.js, keyd, a few GNOME settings, and
+zsh with oh-my-zsh (its upstream installer, piped from GitHub). Then reboot (the NVIDIA
+driver needs it) and check `nvidia-smi`.
+
+Two steps are opt-in because they are big or opinionated: the dictation stack (several GB
+of models) and the desktop restyle. `BOOTSTRAP_DICTATION=1 BOOTSTRAP_DESKTOP=1 ./bootstrap.sh`
+turns them on.
 
 After that, the rest is checklists you run by hand:
 [`dotfiles-symlinks.md`](dotfiles-symlinks.md), [`RECTANGLE_KEYS.md`](RECTANGLE_KEYS.md),
@@ -48,7 +53,7 @@ After that, the rest is checklists you run by hand:
 ## How it is built
 
 - **Plain bash.** No chezmoi, stow, Ansible, or dotbot. You can read it in 10 minutes.
-- **Safe to re-run.** Every step checks before it changes anything.
+- **Safe to re-run.** Package steps skip what is already installed; settings steps just set the same values again.
 - **Visible.** `set -x`, so you see every command.
 - **Checklists over magic.** Moving apps is a judgment call, so those parts are Markdown.
 
@@ -63,7 +68,8 @@ After that, the rest is checklists you run by hand:
 - **Variety on Wayland misdetects the screen size**, so you get 1980px wallpapers on 4K.
   The fix is in [`desktop/README.md`](desktop/README.md).
 
-More in each folder's README.
+More in the READMEs inside `desktop/`, `dictation/`, `keymap/`, `vicinae/`, `faceauth/`
+and `network/`. The keyd files document themselves in their comments.
 
 ---
 
