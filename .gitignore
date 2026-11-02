@@ -14,3 +14,6 @@ vicinae/scripts/unfreeze-bluebubbles.sh
 vicinae/scripts/glance-dashboard.sh
 # Generated per Steam library by vicinae/gen-steam.py
 vicinae/scripts/steam-play-*.sh
+
+# Local Claude Code settings
+.claude/
