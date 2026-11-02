@@ -317,7 +317,7 @@ cat <<'STEPS'
      take full effect. Test: Ctrl now sits next to the spacebar.
 
   3. Generate an SSH key and add it to GitHub:
-       ssh-keygen -t ed25519 -C "scottdnelson.coffee@gmail.com"
+       ssh-keygen -t ed25519 -C "you@example.com"
        eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519
        cat ~/.ssh/id_ed25519.pub      # paste into github.com/settings/keys
      Or use the GitHub CLI:

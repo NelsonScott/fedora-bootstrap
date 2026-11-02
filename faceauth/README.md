@@ -1,15 +1,15 @@
 # Face unlock (Howdy) — set up 2026-08-24
 
 Camera: Logitech Brio 4K (IR sensor = 340x340 GREY node), addressed by stable
-path /dev/v4l/by-id/usb-046d_Logitech_BRIO_10C26E57-video-index2.
+path /dev/v4l/by-id/usb-046d_Logitech_BRIO_<serial>-video-index2.
 
-Install: python3-dlib + howdy RPMs from ~/projects/howdy-copr (or the COPR once
-published). pip-installing dlib does NOT work: no Linux wheel, its build ignores
+Install: python3-dlib + howdy RPMs from the COPR
+(https://copr.fedorainfracloud.org/coprs/scottnelson/howdy/). pip-installing dlib does NOT work: no Linux wheel, its build ignores
 CMAKE_ARGS (CUDA breaks vs new gcc), and --user installs are invisible to root,
 which is who runs the PAM check.
 
 PAM wiring (deliberately NOT in the shared system-auth, so ssh is never affected):
-  /etc/pam.d/sudo         auth sufficient pam_howdy.so   (moot: sudoers has NOPASSWD)
+  /etc/pam.d/sudo         auth sufficient pam_howdy.so
   /etc/pam.d/polkit-1     override file, covers 1Password + all permission popups
   /etc/pam.d/gdm-password covers lock screen AND boot login (keyring nag possible
                           at boot-by-face; acceptable, box reboots ~never)

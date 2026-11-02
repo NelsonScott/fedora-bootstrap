@@ -80,6 +80,6 @@ ln -sfn ~/dotfiles/bin/transcribe ~/.local/bin/transcribe
 
 ```bash
 ls -la ~/.zshrc ~/.vimrc ~/.gitconfig ~/.local/bin/transcribe
-# Each should show:  -> /home/scott/dotfiles/...  (or fedora-bootstrap for zshrc)
+# Each should show:  -> ~/dotfiles/...  (or fedora-bootstrap for zshrc)
 exec zsh   # reload into the new shell
 ```

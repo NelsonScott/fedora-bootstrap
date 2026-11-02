@@ -50,7 +50,6 @@ name='suse-yast.directory'
 translate=true
 
 [desktop/background]
-picture-uri='file:///home/scottnelson/.config/variety/wallpaper/wallpaper-quote-b19649386090f195c61aaee4bf01b43f.jpg'
 picture-uri-dark='file:///home/scottnelson/.config/variety/wallpaper/wallpaper-quote-b19649386090f195c61aaee4bf01b43f.jpg'
 
 [desktop/break-reminders/eyesight]
@@ -132,14 +131,6 @@ report-technical-problems=true
 [desktop/screen-time-limits]
 daily-limit-seconds=uint32 28800
 
-[desktop/screensaver]
-idle-activation-enabled=false
-lock-delay=uint32 0
-lock-enabled=false
-
-[desktop/session]
-idle-delay=uint32 0
-
 [desktop/wm/keybindings]
 close=['<Super>q', '<Alt>F4']
 maximize=@as []
@@ -208,7 +199,6 @@ last-folder-path='/tmp'
 last-folder-path='/tmp'
 
 [settings-daemon/plugins/color]
-night-light-last-coordinates=(40.919699999999999, -73.789000000000001)
 
 [settings-daemon/plugins/housekeeping]
 donation-reminder-last-shown=int64 1773366715240026

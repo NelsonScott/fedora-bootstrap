@@ -122,11 +122,9 @@ function connect() {
     echo "Usage: connect <device_name>"
     return 1
   fi
-  case "$1" in
-    logi) device_address="10:94:97:39:12:F3" ;;
-    jbl)  device_address="D8:37:3B:15:08:E3" ;;
-    *)    echo "Device '$1' not recognized."; return 1 ;;
-  esac
+  # Nicknames live in ~/.zshrc.local:  typeset -gA BT_DEVICES=(logi AA:BB:CC:DD:EE:FF)
+  device_address="${BT_DEVICES[$1]}"
+  [[ -n "$device_address" ]] || { echo "Device '$1' not recognized."; return 1; }
   bluetoothctl disconnect "$device_address"
   bluetoothctl connect "$device_address"
 }
@@ -186,34 +184,17 @@ search() {
   fi
 }
 
-# Always run Claude Code with permission prompts skipped
-alias claude="claude --dangerously-skip-permissions"
 
 # Disable legacy Ctrl+S/Ctrl+Q terminal freeze (XON/XOFF flow control)
 stty -ixon
 
 . "$HOME/.local/bin/env"
 
-# Android SDK / JDK 17 for Peloton APK builds (added by automated setup 2026-07-06)
-export JAVA_HOME=/opt/jdk/jdk-17.0.19+10
-export ANDROID_HOME=$HOME/Android/Sdk
-export ANDROID_SDK_ROOT=$HOME/Android/Sdk
-export PATH="$JAVA_HOME/bin:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
 
-# >>> mamba initialize >>>
-# !! Contents within this block are managed by 'micromamba shell init' !!
-export MAMBA_EXE='/home/scottnelson/.local/bin/micromamba';
-export MAMBA_ROOT_PREFIX='/home/scottnelson/micromamba';
-__mamba_setup="$("$MAMBA_EXE" shell hook --shell zsh --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__mamba_setup"
-else
-    alias micromamba="$MAMBA_EXE"  # Fallback on help from micromamba activate
-fi
-unset __mamba_setup
-# <<< mamba initialize <<<
-export UE_EDITOR_PATH="$HOME/opt/UnrealEngine/Engine/Binaries/Linux/UnrealEditor-Cmd"
 
 # macOS-style open command
 alias open='xdg-open'
 export PATH="$HOME/.npm-global/bin:$PATH"
+
+# Machine-specific bits (device addresses, project toolchains) live outside the repo.
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
