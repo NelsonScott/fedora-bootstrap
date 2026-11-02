@@ -22,6 +22,7 @@ Blue Yeti, a 4K monitor). Read a piece before you run it, and take what is usefu
 | **App migration list** | Each Mac app and brew tool, with its Fedora equivalent or the least-bad workaround. | [`MIGRATION.md`](MIGRATION.md) |
 | **Browser add-ons** | Chrome extensions mapped to Firefox add-ons, Vimium settings. | [`FIREFOX_EXTENSIONS.md`](FIREFOX_EXTENSIONS.md), [`vimium/`](vimium/) |
 | **Face unlock** | Howdy with an IR webcam, including the SELinux module GDM needs. | [`faceauth/`](faceauth/) |
+| **Living next to a Mac** | BlueBubbles (iMessage via your Mac) with a one-key unfreeze for its NVIDIA redraw bug. | [`desktop/bin/bbfix`](desktop/bin/bbfix) |
 | **AirDrop-ish** | LocalSend set up so iPhone screenshots land in a folder. | [`desktop/localsend/`](desktop/localsend/) |
 
 Dictation (double-tap Ctrl, local Whisper) started here and grew into its own project:

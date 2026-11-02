@@ -7,10 +7,8 @@ upgrade-log/2026-08-28-*
 upgrade-log/*.log
 
 # Personal: tied to my LAN / private services. Kept on disk (vicinae/scripts is live-symlinked), not published.
-network/
 upgrade-log/
 vicinae/scripts/runway-open.sh
-vicinae/scripts/unfreeze-bluebubbles.sh
 vicinae/scripts/glance-dashboard.sh
 # Generated per Steam library by vicinae/gen-steam.py
 vicinae/scripts/steam-play-*.sh

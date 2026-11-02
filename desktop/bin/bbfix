@@ -1,0 +1,22 @@
+#!/bin/sh
+# Unfreeze BlueBubbles when its window stops updating (Flutter 3.47 + NVIDIA EGLImage bug).
+# Needs the vicinae@dagimg-dot GNOME extension, which provides the Windows D-Bus interface. A 1px resize makes Flutter recreate the shared
+# frame texture, which is the only thing that revives the window.
+set -e
+list=$(gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell/Extensions/Windows \
+  --method org.gnome.Shell.Extensions.Windows.List)
+eval "$(printf '%s' "$list" | python3 -c '
+import sys, ast, json
+s = sys.stdin.read().strip()
+s = ast.literal_eval(s)[0] if s.startswith("(") else s
+for w in json.loads(s):
+    if w.get("wm_class") == "bluebubbles":
+        print("WIN=%d W=%d H=%d" % (w["id"], w["width"], w["height"])); break
+else:
+    print("WIN=")
+')"
+[ -n "$WIN" ] || { echo "bbfix: no BlueBubbles window" >&2; exit 1; }
+call() { gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell/Extensions/Windows \
+  --method org.gnome.Shell.Extensions.Windows.Resize "$WIN" "$1" "$2" >/dev/null; }
+call $((W + 1)) "$H"; sleep 1; call "$W" "$H"
+echo "bbfix: nudged BlueBubbles window $WIN (${W}x${H})"
