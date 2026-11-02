@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=LocalSend
+Comment=Receive files from the iPhone in the background
+Exec=flatpak run --user org.localsend.localsend_app --hidden
+X-GNOME-Autostart-enabled=true
+NoDisplay=true

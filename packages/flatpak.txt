@@ -15,3 +15,4 @@
 org.videolan.VLC          # media player
 com.valvesoftware.Steam   # gaming (Flatpak build recommended for NVIDIA)
 
+org.localsend.localsend_app   # LocalSend: AirDrop-like file drop from the iPhone (see desktop/localsend)
