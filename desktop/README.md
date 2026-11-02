@@ -22,7 +22,7 @@ Run by `bootstrap.sh` step 11, or standalone: `./desktop/install.sh` (idempotent
 
 | Gotcha | Consequence | Where handled |
 |---|---|---|
-| GDK misdetects the display on Wayland ([variety#863](https://github.com/varietywalls/variety/issues/863)) | 1980px wallpapers on a 4K screen, portrait-cropped overlays | `GDK_BACKEND=x11` in autostart + `screen_size` pin (Util patch) |
+| GDK misdetects the display on Wayland ([variety#863](https://github.com/varietywalls/variety/issues/863)) | 1980px wallpapers on a 4K screen, portrait-cropped overlays | `GDK_BACKEND=x11` in autostart + `screen_size` pin (user-level `pyoverride/sitecustomize.py` via PYTHONPATH, no root) |
 | Negative clock offsets eaten by strftime ([variety#862](https://github.com/varietywalls/variety/issues/862), [PR#864](https://github.com/varietywalls/variety/pull/864)) | `[%HOFFSET-3]` → `[15OFFSET-3]`, magick fails silently | `variety-style` only emits `+N` offsets |
 | ImageMagick can't select a weight from a variable font | Clock renders at the thin default master | Static instances cut with fontTools |
 | Fedora ships stock wallpapers as `.jxl` | Variety sees 0 images in `/usr/share/backgrounds` | Source disabled |
@@ -30,7 +30,7 @@ Run by `bootstrap.sh` step 11, or standalone: `./desktop/install.sh` (idempotent
 | Lingering user services block `environment.d` refresh | Qt/cursor env vars silently missing after re-login | Comment + manual `set-environment` line in `install.sh` |
 
 **After any `dnf update` that touches variety:** run
-`~/.config/variety/patches/reapply.sh`.
+`~/.config/variety/patches/reapply.sh` (restores the autostart env Variety rewrites on every version bump; and re-copies QuoteWriter/Unsplash into /usr/lib).
 
 **Manual step:** Wallhaven API key (wallhaven.cc/settings/account) is not
 committed — the installer prints a reminder.

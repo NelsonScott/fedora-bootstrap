@@ -1,0 +1,26 @@
+#!/bin/bash
+# Reboot the Blue Yeti's own MCU with Blue's vendor command (what Logi/Blue software sends).
+# Fixes the hang where the Yeti enumerates fine but its capture endpoint returns only
+# zero-length packets (arecord: Input/output error, hw_ptr 0). USB unbind/bind, port
+# disable, USBDEVFS_RESET and runtime suspend do NOT fix that; this does (verified 2026-09-24).
+# Command from github.com/keasbeexd/blue-yeti-autoreset: SET_CUR to extension unit 0x19,
+# selector 0x0a, payload 00 09 00.. ; firmware 0.20 (046d:0ab7) only. Run as root.
+[[ $EUID -eq 0 ]] || { echo "must run as root (pkexec/sudo)"; exit 1; }
+DEV=""
+for d in /sys/bus/usb/devices/*; do
+  [[ $(cat $d/idVendor 2>/dev/null):$(cat $d/idProduct 2>/dev/null) == 046d:0ab7 ]] && DEV=$(basename $d) && break
+done
+[[ -n $DEV ]] || { echo "no Yeti (046d:0ab7) found"; exit 2; }
+S=/sys/bus/usb/devices/$DEV
+[[ $(cat $S/bcdDevice) == 0020 ]] || { echo "Yeti firmware $(cat $S/bcdDevice) != 0020; falling back to usb-replug"; exec "$(dirname "$0")/usb-replug" "Blue Microphones"; }
+NODE=$(printf /dev/bus/usb/%03d/%03d "$(cat $S/busnum)" "$(cat $S/devnum)")
+echo "$DEV:1.0" > /sys/bus/usb/drivers/snd-usb-audio/unbind 2>/dev/null   # usbfs must own interface 0
+python3 - "$NODE" <<'PY'
+import os,fcntl,struct,ctypes,sys
+fd=os.open(sys.argv[1],os.O_RDWR)
+fcntl.ioctl(fd,0x8004550F,struct.pack('I',0))                 # USBDEVFS_CLAIMINTERFACE 0
+buf=ctypes.create_string_buffer(bytes([0,9,0,0,0,0,0,0]),8)
+ct=struct.pack('BBHHHIxxxxQ',0x21,0x01,0x0a00,0x1900,8,5000,ctypes.addressof(buf))
+try: fcntl.ioctl(fd,0xC0185500,ct); print("reset command sent; Yeti will re-enumerate")
+except OSError as e: print("reset command:",e,"(a disconnect here is normal)")
+PY

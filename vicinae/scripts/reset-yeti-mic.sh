@@ -6,14 +6,15 @@
 # @vicinae.keywords ["fix audio","fix mic","audio","mic","microphone","yeti","reset","replug","blue","zoom mic","no sound"]
 # @vicinae.packageName Desktop
 # The Blue Yeti sometimes hangs: PipeWire shows it RUNNING/unmuted but it delivers zero samples.
-# Restarting PipeWire does nothing; only a USB unbind/bind (what a physical replug does) fixes it.
+# Restarting PipeWire does nothing, and neither does a USB unbind/bind or port reset: the Yeti's
+# own MCU is wedged (zero-length packets). yeti-reset sends Blue's vendor MCU-reset command.
 # Root part goes through pkexec, which Howdy answers with face auth (see /etc/pam.d/polkit-1).
 export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:$PATH"
 findsrc(){ pactl list sources short | awk '$2 ~ /Blue_Microphones.*analog-stereo$/ {print $2; exit}'; }
 SRC=$(findsrc)
 VOL=$( [[ -n $SRC ]] && pactl get-source-volume "$SRC" | grep -oE '[0-9]+%' | head -1 || echo 75% )
-HELPER=/usr/local/bin/usb-replug; [[ -x $HELPER ]] || HELPER="$HOME/.local/bin/usb-replug"
-pkexec "$HELPER" "Blue Microphones" || { echo "reset failed / auth cancelled"; exit 1; }
+HELPER=/usr/local/bin/yeti-reset   # falls back to usb-replug itself on other firmware
+pkexec "$HELPER" || { echo "reset failed / auth cancelled"; exit 1; }
 for i in $(seq 1 20); do sleep 1; SRC=$(findsrc); [[ -n $SRC ]] && break; done   # re-enumeration can take ~10s
 [[ -n $SRC ]] || { echo "Yeti did not come back on PipeWire after 20s; try a physical replug"; exit 1; }
 pactl set-default-source "$SRC"; pactl set-source-mute "$SRC" 0; pactl set-source-volume "$SRC" "$VOL"

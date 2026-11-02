@@ -1,0 +1,4 @@
+{
+  "keyMappings": "# Mac-style Back/Forward. keyd turns Cmd+Left/Right into Home/End (line start/end in\n# text fields, see /etc/keyd/default.conf [meta]); outside text fields Vimium turns them into Back/Forward.\nmap <home> goBack\nmap <end> goForward",
+  "settingsVersion": "2.4.2"
+}

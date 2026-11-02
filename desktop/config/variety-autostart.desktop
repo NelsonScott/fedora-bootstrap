@@ -2,7 +2,7 @@
 Name=Variety
 Comment=Variety Wallpaper Changer
 Categories=GNOME;GTK;Utility;
-Exec=/bin/bash -c "sleep 20 && GDK_BACKEND=x11 /usr/bin/variety --profile /home/scottnelson/.config/variety/"
+Exec=/bin/bash -c "sleep 20 && GDK_BACKEND=x11 PYTHONPATH=/home/scottnelson/.config/variety/patches/pyoverride /usr/bin/variety --profile /home/scottnelson/.config/variety/"
 MimeType=text/uri-list;x-scheme-handler/variety;x-scheme-handler/vrty;
 Icon=variety
 Terminal=false

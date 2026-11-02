@@ -141,9 +141,13 @@ CSCHEMA="$HOME/.local/share/gnome-shell/extensions/copyous@boerdereinar.dev/sche
 # RUN IT AGAIN after any `dnf update` that touches variety):
 #   1. QuoteWriter.py — replaced quote renderer: three designs (a/b/c) drawn
 #      with Cairo/Pango/PIL instead of the stock hard-edged rectangle.
-#   2. Util.py — get_primary_display_size() honors ~/.config/variety/screen_size,
+#   2. Display size — get_primary_display_size() honors ~/.config/variety/screen_size,
 #      because GDK misdetects the monitor on Wayland AND under fractional
-#      scaling (https://github.com/varietywalls/variety/issues/863).
+#      scaling (https://github.com/varietywalls/variety/issues/863). Since
+#      2026-10-25 this is a user-level monkeypatch (variety/pyoverride/
+#      sitecustomize.py, loaded via PYTHONPATH in the autostart Exec), not a
+#      copied Util.py: the copy needed root, got clobbered by every dnf update,
+#      and a 0.9.1 copy would revert 0.9.2 code.
 #   3. UnsplashDownloader.py — raise fetch floor 1980 -> 3840 so a misdetected
 #      screen can never lock downloads at sub-4K.
 # Related upstream: negative clock offsets bug
@@ -151,18 +155,20 @@ CSCHEMA="$HOME/.local/share/gnome-shell/extensions/copyous@boerdereinar.dev/sche
 # ---------------------------------------------------------------------------
 echo ">>> desktop: Variety"
 install -Dm755 "$DIR/variety/variety-style" "$HOME/.local/bin/variety-style"
-mkdir -p "$HOME/.config/variety/patches"
+mkdir -p "$HOME/.config/variety/patches/pyoverride"
 cp "$DIR/variety/"*.patched.py "$DIR/variety/reapply.sh" "$HOME/.config/variety/patches/"
+cp "$DIR/variety/pyoverride/sitecustomize.py" "$HOME/.config/variety/patches/pyoverride/"
 chmod +x "$HOME/.config/variety/patches/reapply.sh"
-"$HOME/.config/variety/patches/reapply.sh"
 
-# HARDWARE-SPECIFIC: pin the real panel resolution (see Util patch above).
+# HARDWARE-SPECIFIC: pin the real panel resolution (see display-size patch above).
 # Adjust for a different primary monitor.
 [[ -f "$HOME/.config/variety/screen_size" ]] || echo "3840x2160" > "$HOME/.config/variety/screen_size"
+"$HOME/.config/variety/patches/reapply.sh"
 [[ -f "$HOME/.config/variety/quote_style" ]] || echo "b" > "$HOME/.config/variety/quote_style"
 
 # Autostart with GDK_BACKEND=x11 (native-Wayland GDK misdetects the display).
 install -Dm644 "$DIR/config/variety-autostart.desktop" "$HOME/.config/autostart/variety.desktop"
+sed -i "s|/home/scottnelson|$HOME|g" "$HOME/.config/autostart/variety.desktop"
 
 # Tune sources on an existing config (first run of variety creates it):
 #   keep Bing UHD + Unsplash (patched to >=4K), disable the sub-4K sources
